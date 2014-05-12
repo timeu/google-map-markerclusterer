@@ -5,14 +5,18 @@
 
 <!--
 The `google-map-overlayview` element is a generic overlay container element.
+It maps to the OverlayView of google maps v3.
 
 
 ##### Example
 
+    <google-map-overlayview><some-element /></google-map-overlayview>
 
-    <google-map-overlayview><img src="Some specific</google-map-overlayview>
+For example to embed a simple `<img>` element into a overlay use this code:
 
+    <google-map-overlayview><img src="URL" /></google-map-overlayview>
 
+It is also possible to embed another `custom element` inside a `<google-map-overlayview>`
 
 
 @element google-map-overlayview
@@ -32,9 +36,23 @@ The `google-map-overlayview` element is a generic overlay container element.
 
   <script>
     Polymer('google-map-overlayview',{
+
+     /**
+      * The map object of the <google-map> element on which the overlay should be shown.
+      *
+      * @attribute map
+      * @type google.maps.Map
+      */
       map : null,
-      container : null,
       overlay : null,
+
+     /**
+      * Specifies if the overlay should be shown or hidden (default: true)
+      *
+      * @attribute visible
+      * @type boolean
+      * @default true
+     */
       visible: true,
 
       mapApiLoaded: function() {
@@ -43,7 +61,8 @@ The `google-map-overlayview` element is a generic overlay container element.
              return;
           this.overlayView.prototype = new google.maps.OverlayView();
           this.overlayView.prototype.onAdd = this.onAdd_.bind(this);
-          this.overlayView.prototype.draw = this.draw_.bind(this);
+          this.overlayView.prototype
+          .draw = this.draw_.bind(this);
           this.overlayView.prototype.onRemove = this.onRemove_.bind(this);
           this.overlay = new this.overlayView(this.map);
         }
@@ -71,15 +90,16 @@ The `google-map-overlayview` element is a generic overlay container element.
           this.overlay.setMap(this.map);
         }
       },
-      /**
-        * Synchronous function to set the map
-        *
-        * @param {google.maps.Map} map object or null.
-        *
-      */
       getMap : function() {
         return this.overlay.getMap();
       },
+      /**
+        * Synchronous function to set the map
+        *
+        * @method setMap
+        * @param {google.maps.Map} map object or null.
+        *
+      */
       setMap : function(map) {
         if (this.overlay &&  this.overlay instanceof google.maps.OverlayView) {
           this.overlay.setMap(map);
@@ -100,15 +120,7 @@ The `google-map-overlayview` element is a generic overlay container element.
 </polymer-element>
 
 
-<!--
-The `google-map-defaulticon` element is the default cluster icon.
-You don't have to specify it when using google-map-markerclusterer.
 
-@element google-map-defaulticon
-@blurb Default icon for google-map-markerclusterer
-@status alpha
-@url github.io
--->
 <polymer-element name="google-map-defaulticon" attributes="defaultStyles">
   <template>
     <style>
@@ -251,8 +263,8 @@ You don't have to specify it when using google-map-markerclusterer.
 
 
 <!--
-The `google-map-clustericon` is an internal element that is used by google-map-markerclusterer.
-By default it wraps a <google-map-defaulticon> element.
+The `google-map-clustericon` is an internal element that is used by `google-map-markerclusterer`.
+By default it wraps a `<google-map-defaulticon>` element.
 
 
 @element google-map-clustericon
@@ -264,7 +276,21 @@ By default it wraps a <google-map-defaulticon> element.
 
    <script>
     Polymer('google-map-clustericon',{
+      /**
+       * Cluster object that contains the markers.
+       *
+       * @attribute cluster
+       * @type GoogleMapCluster
+       */
       cluster : null,
+
+      /**
+       *
+       * The center where the clustericon should be displayed.
+       *
+       * @attribute center
+       * @type google.maps.LatLng
+       */
       center : null,
       calculator : null,
       clusterSubIcon : null,
@@ -307,6 +333,7 @@ By default it wraps a <google-map-defaulticon> element.
           this.style.left = pos.x + "px";
         }
       },
+
       /**
        * Returns the position at which to place the DIV depending on the latlng.
        *
@@ -352,9 +379,7 @@ By default it wraps a <google-map-defaulticon> element.
 
           /**
            * This event is fired when the mouse moves over a cluster marker.
-           * @name MarkerClusterer#mouseover
-           * @param {Cluster} c The cluster that the mouse moved over.
-           * @event
+           * @event mouseovercluster
            */
            cClusterIcon.fire("mouseovercluster", cClusterIcon.cluster);
         });
@@ -362,9 +387,7 @@ By default it wraps a <google-map-defaulticon> element.
         google.maps.event.addDomListener(this, "mouseout", function () {
           /**
            * This event is fired when the mouse moves out of a cluster marker.
-           * @name MarkerClusterer#mouseout
-           * @param {Cluster} c The cluster that the mouse moved out of.
-           * @event
+           * @event mouseoutcluster
            */
           cClusterIcon.fire("mouseoutcluster", cClusterIcon.cluster);
         });
@@ -384,7 +407,8 @@ It helps to cluster markers on a google-map together
 
     <google-map-markerclusterer></google-map-markerclusterer>
 
-##### Example custom cluster marker
+##### Example -  custom cluster marker
+
     <google-map-markerclusterer>
       <google-map-clustericon>
         <my-custom-clustericon></my-custom-clustericon>
@@ -537,17 +561,83 @@ It helps to cluster markers on a google-map together
 
 
     Polymer('google-map-markerclusterer',{
+      /**
+       * Array of `<google-map-marker>` or `<google-map-overlayview-marker>` objects to be clustered.
+       *
+       * @attribute markers
+       * @type  array
+       * @default  []
+       */
       markers : [],
+
+      /**
+       * If set, the zoom level is set such that all markers (google-map-marker children) are brought into view.
+       *
+       * @attribute fitToMarkers
+       * @type boolean
+       * @default false
+      */
       fitToMarkers : false,
+
       clusters : [],
       listeners : [],
       activeMap : null,
       isReady : false,
+
+      /**
+       * BatchSize specifies the amount of markers that should be processed per run.
+       *
+       * @attribute batchSize
+       * @type number
+       * @default  2000
+       */
       batchSize : 2000,
+
+      /**
+       * If set ignores hidden markers when creating the clusters.
+       *
+       * @attribute ignoreHidden
+       * @type boolean
+       * @default false
+      */
       ignoreHidden : false,
+
+      /**
+       * Specifies the size of the grid for each cluster in pixel.
+       *
+       * @attribute gridSize
+       * @type number
+       * @default 60
+       */
       gridSize:60,
+
+      /**
+       *  Sepcifies the minimum number of markers to be clustered.
+       *
+       * @attribute minimumClusterSize
+       * @type number
+       * @default 2
+       */
       minimumClusterSize : 2,
+
+      /**
+       * If set, the center of the cluster is set to the average of all locations of its containing markers.
+       * Otherwise the cluster center will be the one of the first marker added to it.
+       *
+       * @attribute averageCenter
+       * @type boolean
+       * @default false
+       */
       averageCenter : false,
+
+      /**
+       * Specifies the maximum zoom at which individual markers are shown.
+       * By default no maxZoom is set.
+       *
+       * @attribute maxZoom
+       * @type number
+       * @default null
+       */
       maxZoom : null,
       clusterIconTemplate_ : null,
       observe : {
@@ -557,8 +647,6 @@ It helps to cluster markers on a google-map together
         minimumClusterSize : 'repaint',
         averageCenter : 'repaint',
       },
-
-
 
       attached: function() {
           var clusterIconTemplateContent = this.$.clustericontemplate.getDistributedNodes();
@@ -726,11 +814,9 @@ It helps to cluster markers on a google-map together
         // Cancel previous batch processing if we're working on the first batch:
         if (iFirst === 0) {
           /**
-           * This event is fired when the <code>MarkerClusterer</code> begins
-           *  clustering markers.
-           * @name MarkerClusterer#clusteringbegin
-           * @param {MarkerClusterer} mc The MarkerClusterer whose markers are being clustered.
-           * @event
+           * This event is fired when the google-map-markerclusterer begins clustering markers.
+           *
+           * @event clusteringbegin
            */
           this.fire("clusteringbegin");
 
@@ -771,11 +857,9 @@ It helps to cluster markers on a google-map together
           delete this.timerRefStatic;
 
           /**
-           * This event is fired when the <code>MarkerClusterer</code> stops
-           *  clustering markers.
-           * @name MarkerClusterer#clusteringend
-           * @param {MarkerClusterer} mc The MarkerClusterer whose markers are being clustered.
-           * @event
+           * This event is fired when the google-map-markerclusterer stops  clustering markers.
+           *
+           * @event clusterend
            */
           this.fire("clusterend");
         }
@@ -783,6 +867,8 @@ It helps to cluster markers on a google-map together
       /**
        * Removes all clusters and markers from the map and also removes all markers
        *  managed by the clusterer.
+       *
+       * @method clearMarkers
        */
       clearMarkers : function (markers) {
         this.resetViewport_(true,markers);
@@ -877,27 +963,53 @@ It helps to cluster markers on a google-map together
       },
       fitToMarkersChanged : function() {
         if (this.map && this.fitToMarkers) {
-          var markers = this.getMarkers();
+          var markers = this.markers;
           var bounds = new google.maps.LatLngBounds();
           for (var i = 0; i < markers.length; i++) {
             bounds.extend(markers[i].getPosition());
           }
-          map.fitBounds(bounds);
+         this.map.fitBounds(bounds);
         }
-      },
-      configurationChanged : function(oldValue,newValue) {
-          if (this.map && this.map instanceof google.maps.Map) {
-
-          }
       },
     });
   })();
   </script>
 </polymer-element>
+
+<!--
+The `<google-map-overlayview-marker>`can be used as a replacement for
+`<google-map-marker>` together with the `<google-map-markerclusterer>`.
+It inherits from `<google-map-overlayview>` but adds  the two methods `getPosition()`
+and `getDraggable()` to the base class because they are used by the markerclusterer.
+
+##### Example
+
+    <google-map-overlayview-marker><my-custom-element /></google-map-overlayview-marker>
+
+
+@element google-map-overlayview-marker
+@blurb google-map-marker replacement for custom overlays
+@status alpha
+@url github.io
+-->
 <polymer-element name="google-map-overlayview-marker" extends="google-map-overlayview" >
   <script>
     Polymer('google-map-overlayview-marker',{
+      /**
+       * Specifies the position where the overlay should be displayed
+       *
+       * @attribute position
+       * @type google.maps.LatLng
+       */
       position:null,
+
+      /**
+       * If set allows the overlay to be dragged
+       *
+       * @attribute draggable
+       * @type boolean
+       * @default false
+       */
       draggable : false ,
       getDraggable : function() {
         return this.draggable;
