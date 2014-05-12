@@ -1,0 +1,922 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../google-apis/google-apis.html">
+
+
+
+<!--
+The `google-map-overlayview` element is a generic overlay container element.
+
+
+##### Example
+
+
+    <google-map-overlayview><img src="Some specific</google-map-overlayview>
+
+
+
+
+@element google-map-overlayview
+@blurb OverlayView element from google maps.
+@status alpha
+@url github.io
+-->
+<polymer-element name="google-map-overlayview" attributes="visible map">
+  <template >
+   <template if="{{visible}}">
+      <google-maps-api version="{{version}}" sensor="{{sensor}}" on-api-load="{{mapApiLoaded}}"></google-maps-api>
+      <div id="container">
+        <content id="overlayContent"></content>
+      </div>
+    </template>
+  </template>
+
+  <script>
+    Polymer('google-map-overlayview',{
+      map : null,
+      container : null,
+      overlay : null,
+      visible: true,
+
+      mapApiLoaded: function() {
+        if (typeof google === 'object' && typeof google.maps === 'object')  {
+          if (this.overlay && this.overlay instanceof google.maps.OverlayView)
+             return;
+          this.overlayView.prototype = new google.maps.OverlayView();
+          this.overlayView.prototype.onAdd = this.onAdd_.bind(this);
+          this.overlayView.prototype.draw = this.draw_.bind(this);
+          this.overlayView.prototype.onRemove = this.onRemove_.bind(this);
+          this.overlay = new this.overlayView(this.map);
+        }
+      },
+
+      overlayView : function(map) {
+          if (map && map instanceof google.maps.Map) {
+            this.setMap(map);
+          }
+      },
+      ready: function() {
+
+      },
+      created : function() {
+        this.mapApiLoaded();
+      },
+      attached : function() {
+
+      },
+      detached : function() {
+
+      },
+      mapChanged: function() {
+        if (this.overlay &&  this.overlay instanceof google.maps.OverlayView) {
+          this.overlay.setMap(this.map);
+        }
+      },
+      /**
+        * Synchronous function to set the map
+        *
+        * @param {google.maps.Map} map object or null.
+        *
+      */
+      getMap : function() {
+        return this.overlay.getMap();
+      },
+      setMap : function(map) {
+        if (this.overlay &&  this.overlay instanceof google.maps.OverlayView) {
+          this.overlay.setMap(map);
+        }
+      },
+      draw_ : function() {
+
+      },
+      onRemove_ :function() {
+        this.parentNode.removeChild(this);
+      },
+      onAdd_ : function() {
+        var panes = this.overlay.getPanes();
+        panes.overlayLayer.appendChild(this);
+      },
+    });
+  </script>
+</polymer-element>
+
+
+<!--
+The `google-map-defaulticon` element is the default cluster icon.
+You don't have to specify it when using google-map-markerclusterer.
+
+@element google-map-defaulticon
+@blurb Default icon for google-map-markerclusterer
+@status alpha
+@url github.io
+-->
+<polymer-element name="google-map-defaulticon" attributes="defaultStyles">
+  <template>
+    <style>
+      :host {
+        position:absolute;
+        left:-{{iconOffset[1]}};
+        top:-{{iconOffset[0]}};
+      }
+      .icon  {
+        position:absolute
+        left:0;
+        top:0;
+      }
+      .text {
+        position:absolute;
+        left:{{textOffset[1]}};
+        top:{{textOffset[0]}};
+        text-align:center;
+        font-family: Arial,sans-serif;
+        font-weight: bold;
+        font-style: normal;
+        text-decoration: none;
+        width:{{iconStyle.width}};
+        line-height:{{iconStyle.height}};
+        font-size:{{iconStyle.textSize}};
+        color:{{iconStyle.textColor}};
+      }
+    </style>
+    <img class="icon" id="icon" src="{{iconStyle.url}}"></img>
+    <div class="text" id="text">{{text}}</div>
+  </template>
+  <script>
+  (function() {
+     var DEFAULT_STYLES = [
+       {
+         url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/m1.png',
+         width: "53px",
+         height: "52px",
+         textColor: 'black',
+         textSize: "11px"
+       },
+       {
+         url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/m2.png',
+         width: "56px",
+         height: "56px",
+         textColor: 'black',
+         textSize: "11px"
+       },
+       {
+         url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/m3.png',
+         width: "66px",
+         height: "66px",
+         textColor: 'black',
+         textSize: "12px"
+       },
+       {
+         url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/m4.png',
+         width: "78px",
+         height: "78px",
+         textColor: 'black',
+         textSize: "13px"
+       },
+       {
+         url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/m5.png',
+         width: "90px",
+         height: "90px",
+         textColor: 'black',
+         textSize: "14px"
+       }
+     ];
+     var ACTIVE_STYLES = DEFAULT_STYLES;
+     var CALCULATOR = function(markers,numStyles) {
+      var index = 0;
+      var title = "";
+      var count = markers.length.toString();
+      var dv = count;
+      while (dv !== 0) {
+        dv = parseInt(dv / 10, 10);
+        index++;
+      }
+      index = Math.min(index, numStyles);
+      return {
+        text: count,
+        index: index,
+        title: title
+      };
+     };
+
+     Polymer('google-map-defaulticon',{
+
+       cluster : null,
+       center : null,
+       calculator : null,
+       styles : null,
+       title : '',
+       text : '',
+       imageUrl : '',
+       iconStyle : null,
+       iconOffset : null,
+       observe : {
+         calculator : 'update_',
+         cluster : 'update_'
+       },
+       created : function() {
+        this.styles = this.styles || ACTIVE_STYLES;
+        this.calculator = this.calculator || CALCULATOR;
+       },
+       defaultStylesChanged : function(oldValue,newValue) {
+         // TODO workaround because importNode doesn't copy the styles variable
+          ACTIVE_STYLES = newValue || DEFAULT_STYLES;
+       },
+       update_ : function() {
+         // check also cluster.markers because remove on cluster will also delete the markers field
+          if (!this.cluster || !this.styles || !this.cluster.markers) {
+            return;
+          }
+          var styleInfo = this.calculator(this.cluster.markers,this.styles.length);
+          var index = Math.max(0, styleInfo.index - 1);
+          this.iconStyle = this.styles[index];
+          this.iconOffset = this.iconStyle.anchorIcon ||  [parseInt(this.iconStyle.height)/2+"px",parseInt(this.iconStyle.width)/2+"px"];
+          this.textOffset = this.iconStyle.anchorText || ["0px","0px"];
+          this.title = styleInfo.title;
+          this.text = styleInfo.text;
+          // because binding in style doesn't work with polyfills (https://github.com/Polymer/polymer/issues/270)
+          this.$.text.style.left = this.textOffset[1];
+          this.$.text.style.top = this.textOffset[0];
+          this.$.text.style.width = this.iconStyle.width;
+          this.$.text.style.height = this.iconStyle.height;
+          this.$.text.style.lineHeight = this.iconStyle.height;
+          this.$.text.style.color = this.iconStyle.color;
+          this.style.left = "-"+this.iconOffset[1];
+          this.style.top = "-"+this.iconOffset[0];
+          this.$.text.style.position="absolute";
+       },
+
+     });
+   })();
+   </script>
+</polymer-element>
+
+
+<!--
+The `google-map-clustericon` is an internal element that is used by google-map-markerclusterer.
+By default it wraps a <google-map-defaulticon> element.
+
+
+@element google-map-clustericon
+@blurb Default icon container for google-map-markerclusterer
+@status alpha
+@url github.io
+-->
+<polymer-element name="google-map-clustericon" extends="google-map-overlayview" attributes="center cluster">
+
+   <script>
+    Polymer('google-map-clustericon',{
+      cluster : null,
+      center : null,
+      calculator : null,
+      clusterSubIcon : null,
+      show : function() {
+        this.visible = true;
+      },
+      onRemove_ : function() {
+         if (this.parentNode) {
+          google.maps.event.removeListener(this.boundsChangedListener_);
+          google.maps.event.clearInstanceListeners(this);
+          this.super();
+        }
+      },
+      ready : function() {
+        var contents = this.$.overlayContent.getDistributedNodes();
+        if (contents.length > 0) {
+          this.clusterSubIcon = contents[0];
+        }
+      },
+      setCluster : function(cluster) {
+         this.cluster = cluster;
+         if (this.clusterSubIcon) {
+           this.clusterSubIcon.cluster = this.cluster;
+         }
+
+      },
+     /*clusterChanged : function() {
+        if (this.clusterSubIcon) {
+          this.clusterSubIcon.cluster = this.cluster;
+        }
+      },*/
+      hide : function() {
+        this.visible = false;
+      },
+
+      draw_ : function() {
+        if (this.visible) {
+          var pos = this.getPosFromLatLng_(this.center);
+          this.style.top = pos.y + "px";
+          this.style.left = pos.x + "px";
+        }
+      },
+      /**
+       * Returns the position at which to place the DIV depending on the latlng.
+       *
+       * @param {google.maps.LatLng} latlng The position in latlng.
+       * @return {google.maps.Point} The position in pixels.
+       */
+      getPosFromLatLng_ : function (latlng) {
+        var pos = this.overlay.getProjection().fromLatLngToDivPixel(latlng);
+        pos.x = parseInt(pos.x, 10);
+        pos.y = parseInt(pos.y, 10);
+        return pos;
+      },
+      onAdd_ : function() {
+        this.style.position = 'absolute';
+        this.style.cursor='pointer';
+        var cClusterIcon = this;
+        var cMouseDownInCluster;
+        var cDraggingMapByCluster;
+
+        this.overlay.getPanes().overlayMouseTarget.appendChild(this);
+
+        // Fix for Issue 157
+        this.boundsChangedListener_ = google.maps.event.addListener(this.getMap(), "bounds_changed", function () {
+          cDraggingMapByCluster = cMouseDownInCluster;
+        });
+
+        google.maps.event.addDomListener(this, "mousedown", function () {
+          cMouseDownInCluster = true;
+          cDraggingMapByCluster = false;
+        });
+
+        google.maps.event.addDomListener(this, "click", function (e) {
+          cMouseDownInCluster = false;
+          if (!cDraggingMapByCluster) {
+            var theBounds;
+            var mz;
+            var mc = cClusterIcon.mc;
+            cClusterIcon.fire("clickcluster",cClusterIcon.cluster);
+          }
+        });
+
+        google.maps.event.addDomListener(this, "mouseover", function () {
+
+          /**
+           * This event is fired when the mouse moves over a cluster marker.
+           * @name MarkerClusterer#mouseover
+           * @param {Cluster} c The cluster that the mouse moved over.
+           * @event
+           */
+           cClusterIcon.fire("mouseovercluster", cClusterIcon.cluster);
+        });
+
+        google.maps.event.addDomListener(this, "mouseout", function () {
+          /**
+           * This event is fired when the mouse moves out of a cluster marker.
+           * @name MarkerClusterer#mouseout
+           * @param {Cluster} c The cluster that the mouse moved out of.
+           * @event
+           */
+          cClusterIcon.fire("mouseoutcluster", cClusterIcon.cluster);
+        });
+      },
+    });
+  </script>
+</polymer-element>
+
+
+
+
+<!--
+The `google-map-markerclusterer` element is a port of markercluster-plus to polymer.
+It helps to cluster markers on a google-map together
+
+##### Example
+
+    <google-map-markerclusterer></google-map-markerclusterer>
+
+##### Example custom cluster marker
+    <google-map-markerclusterer>
+      <google-map-clustericon>
+        <my-custom-clustericon></my-custom-clustericon>
+      </google-map-clustericon>
+    </google-map-markerclusterer>
+
+@element google-map-markerclusterer
+@blurb Element for providing clustering functionality for markers on google maps.
+@status alpha
+@url github.io
+-->
+<polymer-element name="google-map-markerclusterer" extends="google-map-overlayview" attributes="batchSize fitToMarkers markers map gridSize styles maxZoom minimumClusterSize averageCenter">
+
+  <template>
+    <google-maps-api apiKey="{{apiKey}}" version="{{version}}" sensor="{{sensor}}" on-api-load="{{mapApiLoaded}}"></google-maps-api>
+    <google-map-clustericon id="defaultclustericon"><google-map-defaulticon defaultStyles="{{styles}}" /></google-map-clustericon>
+    <content id="clustericontemplate" select="google-map-clustericon"></content>
+    <content id="markers"></content>
+  </template>
+
+  <script>
+
+   (function () {
+
+    function GoogleMapCluster(mc,clusterIcon,minimumClusterSize,maxZoom,averageCenter) {
+      this.markers = [];
+      this.center = null;
+      this.averageCenter  = averageCenter;
+      this.minimumClusterSize = minimumClusterSize;
+      this.maxZoom = maxZoom;
+      this.mc = mc;
+      this.clusterIcon  = clusterIcon;
+      this.clusterIcon.setCluster(this);
+      this.clusterIcon.setMap(this.mc.map);
+    }
+
+
+   GoogleMapCluster.prototype.getBounds = function() {
+     var i;
+     var bounds = new google.maps.LatLngBounds(this.center, this.center);
+     for (i = 0; i < this.markers.length; i++) {
+       bounds.extend(markers[i].getPosition());
+     }
+     return bounds;
+   };
+   GoogleMapCluster.prototype.remove = function() {
+     // must use synchronous method otherwise markers might not be removed because cluster is deleted
+     this.clusterIcon.setMap(null);
+     //this.clusterIcon.map = null;
+     this.markers = [];
+     delete this.markers;
+   };
+   GoogleMapCluster.prototype.isMarkerAlreadyAdded_ = function() {
+     var i;
+     if (this.markers.indexOf) {
+       return this.markers.indexOf(marker) !== -1;
+     } else {
+       for (i = 0; i < this.markers.length; i++) {
+         if (marker === this.markers[i]) {
+           return true;
+         }
+       }
+     }
+     return false;
+   },
+   /**
+    * Determines if a marker lies within the cluster's bounds.
+    *
+    * @param {google.maps.Marker} marker The marker to check.
+    * @return {boolean} True if the marker lies in the bounds.
+    * @ignore
+    */
+   GoogleMapCluster.prototype.isMarkerInClusterBounds = function (marker) {
+     return this.bounds.contains(marker.getPosition());
+   };
+   GoogleMapCluster.prototype.updateIcon_ = function() {
+     if (this.clusterIcon == null)
+       return;
+     var mCount = this.markers.length;
+     if (this.maxZoom !== null && this.mc.map.getZoom() > this.maxZoom) {
+       this.clusterIcon.hide();
+       return;
+     }
+
+     if (mCount < this.minimumClusterSize) {
+       // Min cluster size not yet reached.
+       this.clusterIcon.hide();
+       return;
+     }
+
+     //var sums = this.markerClusterer_.getCalculator()(this.markers_, numStyles);
+     this.clusterIcon.center  = this.center;
+     this.clusterIcon.show();
+   };
+   /**
+   * Calculates the extended bounds of the cluster with the grid.
+   */
+   GoogleMapCluster.prototype.calculateBounds_ = function () {
+     var bounds = new google.maps.LatLngBounds(this.center, this.center);
+     this.bounds = this.mc.getExtendedBounds(bounds);
+   };
+   GoogleMapCluster.prototype.addMarker = function(marker) {
+     var i;
+     var mCount;
+     var mz;
+
+     if (this.isMarkerAlreadyAdded_(marker)) {
+       return false;
+     }
+
+     if (!this.center) {
+       this.center = marker.getPosition();
+       this.calculateBounds_();
+     } else {
+       if (this.averageCenter) {
+         var l = this.markers.length + 1;
+         var lat = (this.center.lat() * (l - 1) + marker.getPosition().lat()) / l;
+         var lng = (this.center.lng() * (l - 1) + marker.getPosition().lng()) / l;
+         this.center = new google.maps.LatLng(lat, lng);
+         this.calculateBounds_();
+       }
+     }
+     marker.isAdded = true;
+     this.markers.push(marker);
+
+     mCount = this.markers.length;
+     mz = this.maxZoom;
+     if (mz !== null && this.mc.map.getZoom() > mz) {
+       // Zoomed in past max zoom, so show the marker.
+       if (marker.getMap() !== this.mc.map) {
+         marker.setMap(this.mc.map);
+       }
+     } else if (mCount < this.minimumClusterSize) {
+       // Min cluster size not reached so show the marker.
+       if (marker.getMap() !== this.mc.map) {
+         marker.setMap(this.mc.map);
+       }
+     } else if (mCount === this.minimumClusterSize) {
+       // Hide the markers that were showing.
+       for (i = 0; i < mCount; i++) {
+         this.markers[i].setMap(null);
+       }
+     } else {
+       marker.setMap(null);
+     }
+
+     this.updateIcon_();
+     return true;
+   };
+
+
+    Polymer('google-map-markerclusterer',{
+      markers : [],
+      fitToMarkers : false,
+      clusters : [],
+      listeners : [],
+      activeMap : null,
+      isReady : false,
+      batchSize : 2000,
+      ignoreHidden : false,
+      gridSize:60,
+      minimumClusterSize : 2,
+      averageCenter : false,
+      maxZoom : null,
+      clusterIconTemplate_ : null,
+      observe : {
+        gridSize:'repaint',
+        styles: 'repaint',
+        maxZoom: 'repaint',
+        minimumClusterSize : 'repaint',
+        averageCenter : 'repaint',
+      },
+
+
+
+      attached: function() {
+          var clusterIconTemplateContent = this.$.clustericontemplate.getDistributedNodes();
+          if (clusterIconTemplateContent.length > 0) {
+            this.clusterIconTemplate_ = clusterIconTemplateContent[0];
+          }
+          else {
+            this.clusterIconTemplate_ = this.$.defaultclustericon;
+          }
+      },
+      ready: function() {
+      },
+      markersChanged : function(oldValue, newValue) {
+        this.clearMarkers(oldValue);
+        this.initMarkers_();
+        this.redraw_();
+      },
+      mapChanged: function() {
+          this.activateMap = this.map;
+          this.updateMarkers_();
+          this.super();
+      },
+      updateMarkers_: function() {
+        /*this.markers = Array.prototype.slice.call(this.$.markers.getDistributedNodes());
+        this.onMutation(this, this.updateMarkers_); // Watch for future updates.*/
+
+      },
+      initMarkers_ : function() {
+        for (var i =0;i<this.markers.length;i++) {
+          marker = this.markers[i];
+          if (marker.getDraggable()) {
+            var mc = this;
+            google.maps.event.addListener(marker, "dragend", function () {
+              if (mc.isReady) {
+                this.isAdded = false;
+                mc.repaint();
+              }
+            });
+          }
+          marker.isAdded = false;
+        }
+      },
+      onAdd_ : function() {
+        var mc = this;
+        this.activeMap = this.map;
+        this.isReady = true;
+
+        this.repaint();
+
+        // Add the map event listeners
+        this.listeners = [
+          google.maps.event.addListener(this.map, "zoom_changed", function () {
+            mc.resetViewport_(false);
+            // Workaround for this Google bug: when map is at level 0 and "-" of
+            // zoom slider is clicked, a "zoom_changed" event is fired even though
+            // the map doesn't zoom out any further. In this situation, no "idle"
+            // event is triggered so the cluster markers that have been removed
+            // do not get redrawn. Same goes for a zoom in at maxZoom.
+            if (this.getZoom() === (this.get("minZoom") || 0) || this.getZoom() === this.get("maxZoom")) {
+              google.maps.event.trigger(this, "idle");
+            }
+          }),
+          google.maps.event.addListener(this.map, "idle", function () {
+            mc.redraw_();
+          })
+        ];
+      },
+      repaint : function() {
+        //required to make sure that styles changes get propogated first.
+        this.async(function() {
+          var oldClusters = this.clusters.slice();
+          this.clusters = [];
+          this.resetViewport_(false);
+          this.redraw_();
+
+         // Remove the old clusters.
+          // Do it in a timeout to prevent blinking effect.
+          this.async(function () {
+            var i;
+            for (i = 0; i < oldClusters.length; i++) {
+              oldClusters[i].remove();
+            }
+          });
+        });
+      },
+      redraw_ : function() {
+        this.createClusters_(0);
+      },
+      resetViewport_ : function (opt_hide,markers) {
+        if (!markers) {
+          markers = this.markers;
+        }
+        var i, marker;
+        // Remove all the clusters
+        for (i = 0; i < this.clusters.length; i++) {
+          this.clusters[i].remove();
+        }
+        this.clusters = [];
+
+
+        // Reset the markers to not be added and to be removed from the map.
+        for (i = 0; i < markers.length; i++) {
+          marker = markers[i];
+          marker.isAdded = false;
+          if (opt_hide) {
+            marker.setMap(null);
+          }
+        }
+      },
+     /**
+     * Adds a marker to a cluster, or creates a new cluster.
+     *
+     * @param {google.maps.Marker} marker The marker to add.
+     */
+      addToClosestCluster_ : function (marker) {
+        var i, d, cluster, center;
+        var distance = 40000; // Some large number
+        var clusterToAddTo = null;
+          for (i = 0; i < this.clusters.length; i++) {
+            cluster = this.clusters[i];
+            center = cluster.center;
+            if (center) {
+              d = this.distanceBetweenPoints_(center, marker.getPosition());
+              if (d < distance) {
+                distance = d;
+                clusterToAddTo = cluster;
+              }
+            }
+          }
+
+        if (clusterToAddTo && clusterToAddTo.isMarkerInClusterBounds(marker)) {
+          clusterToAddTo.addMarker(marker);
+        } else {
+          clusterIcon = document.importNode(this.clusterIconTemplate_,true);
+          cluster = new GoogleMapCluster(this,clusterIcon,this.minimumClusterSize,this.maxZoom,this.averageCenter);
+
+          // TODO required because importNode won't copy the styles from defaultIcon
+        //  cluster.gridSize = this.gridSize;
+          //cluster.minimumClusterSize = this.minimumClusterSize;
+        //  cluster.mc = this;
+          //cluster.maxZoom = this.maxZoom;
+          //synchronous call required
+          //cluster.setClusterIcon(clusterIcon);
+//          cluster.clusterIcon = clusterIcon;
+          cluster.addMarker(marker);
+
+          this.clusters.push(cluster);
+        }
+      },
+      /**
+      * Creates the clusters. This is done in batches to avoid timeout errors
+      *  in some browsers when there is a huge number of markers.
+      *
+      * @param {number} iFirst The index of the first marker in the batch of
+      *  markers to be added to clusters.
+      */
+      createClusters_ : function (iFirst) {
+        var i, marker;
+        var mapBounds;
+        var mc = this;
+        if (!this.isReady) {
+          return;
+        }
+
+        // Cancel previous batch processing if we're working on the first batch:
+        if (iFirst === 0) {
+          /**
+           * This event is fired when the <code>MarkerClusterer</code> begins
+           *  clustering markers.
+           * @name MarkerClusterer#clusteringbegin
+           * @param {MarkerClusterer} mc The MarkerClusterer whose markers are being clustered.
+           * @event
+           */
+          this.fire("clusteringbegin");
+
+          if (typeof this.timerRefStatic !== "undefined") {
+            clearTimeout(this.timerRefStatic);
+            delete this.timerRefStatic;
+          }
+        }
+
+        // Get our current map view bounds.
+        // Create a new bounds object so we don't affect the map.
+        //
+        // See Comments 9 & 11 on Issue 3651 relating to this workaround for a Google Maps bug:
+        if (this.map.getZoom() > 3) {
+          mapBounds = new google.maps.LatLngBounds(this.map.getBounds().getSouthWest(),
+            this.map.getBounds().getNorthEast());
+        } else {
+          mapBounds = new google.maps.LatLngBounds(new google.maps.LatLng(85.02070771743472, -178.48388434375), new google.maps.LatLng(-85.08136444384544, 178.00048865625));
+        }
+        var bounds = this.getExtendedBounds(mapBounds);
+
+        var iLast = Math.min(iFirst + this.batchSize, this.markers.length);
+
+        for (i = iFirst; i < iLast; i++) {
+          marker = this.markers[i];
+          if (!marker.isAdded && this.isMarkerInBounds_(marker, bounds)) {
+            if (!this.ignoreHidden || (this.ignoreHidden && marker.getVisible())) {
+              this.addToClosestCluster_(marker);
+            }
+          }
+        }
+
+        if (iLast < this.markers.length) {
+          this.timerRefStatic = setTimeout(function () {
+            cMarkerClusterer.createClusters_(iLast);
+          }, 0);
+        } else {
+          delete this.timerRefStatic;
+
+          /**
+           * This event is fired when the <code>MarkerClusterer</code> stops
+           *  clustering markers.
+           * @name MarkerClusterer#clusteringend
+           * @param {MarkerClusterer} mc The MarkerClusterer whose markers are being clustered.
+           * @event
+           */
+          this.fire("clusterend");
+        }
+      },
+      /**
+       * Removes all clusters and markers from the map and also removes all markers
+       *  managed by the clusterer.
+       */
+      clearMarkers : function (markers) {
+        this.resetViewport_(true,markers);
+        if (markers) {
+          markers = [];
+        }
+        else {
+          this.markers = [];
+        }
+      },
+
+      /**
+       * Returns the current bounds extended by the grid size.
+       *
+       * @param {google.maps.LatLngBounds} bounds The bounds to extend.
+       * @return {google.maps.LatLngBounds} The extended bounds.
+       * @ignore
+       */
+      getExtendedBounds : function (bounds) {
+        var projection = this.overlay.getProjection();
+
+        // Turn the bounds into latlng.
+        var tr = new google.maps.LatLng(bounds.getNorthEast().lat(),
+            bounds.getNorthEast().lng());
+        var bl = new google.maps.LatLng(bounds.getSouthWest().lat(),
+            bounds.getSouthWest().lng());
+
+        // Convert the points to pixels and the extend out by the grid size.
+        var trPix = projection.fromLatLngToDivPixel(tr);
+        trPix.x += this.gridSize;
+        trPix.y -= this.gridSize;
+
+        var blPix = projection.fromLatLngToDivPixel(bl);
+        blPix.x -= this.gridSize;
+        blPix.y += this.gridSize;
+
+        // Convert the pixel points back to LatLng
+        var ne = projection.fromDivPixelToLatLng(trPix);
+        var sw = projection.fromDivPixelToLatLng(blPix);
+
+        // Extend the bounds to contain the new bounds.
+        bounds.extend(ne);
+        bounds.extend(sw);
+
+        return bounds;
+      },
+      /**
+       * Calculates the distance between two latlng locations in km.
+       *
+       * @param {google.maps.LatLng} p1 The first lat lng point.
+       * @param {google.maps.LatLng} p2 The second lat lng point.
+       * @return {number} The distance between the two points in km.
+       * @see http://www.movable-type.co.uk/scripts/latlong.html
+      */
+      distanceBetweenPoints_ : function (p1, p2) {
+        var R = 6371; // Radius of the Earth in km
+        var dLat = (p2.lat() - p1.lat()) * Math.PI / 180;
+        var dLon = (p2.lng() - p1.lng()) * Math.PI / 180;
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(p1.lat() * Math.PI / 180) * Math.cos(p2.lat() * Math.PI / 180) *
+          Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        var d = R * c;
+        return d;
+      },
+      isMarkerInBounds_ : function (marker, bounds) {
+        return bounds.contains(marker.getPosition());
+      },
+      onRemove_ :function() {
+        var i;
+        // Put all the managed markers back on the map:
+        for (i = 0; i < this.markers_.length; i++) {
+          if (this.markers_[i].getMap() !== this.activeMap) {
+            this.markers_[i].setMap(this.activeMap);
+          }
+        }
+
+        // Remove all clusters:
+        for (i = 0; i < this.clusters.length; i++) {
+          this.clusters[i].remove();
+        }
+        this.clusters = [];
+
+        // Remove map event listeners:
+        for (i = 0; i < this.listeners.length; i++) {
+          google.maps.event.removeListener(this.listeners[i]);
+        }
+        this.listeners = [];
+        this.activeMap = null;
+        this.isReady = false;
+        this.parentNode.removeChild(this);
+      },
+      fitToMarkersChanged : function() {
+        if (this.map && this.fitToMarkers) {
+          var markers = this.getMarkers();
+          var bounds = new google.maps.LatLngBounds();
+          for (var i = 0; i < markers.length; i++) {
+            bounds.extend(markers[i].getPosition());
+          }
+          map.fitBounds(bounds);
+        }
+      },
+      configurationChanged : function(oldValue,newValue) {
+          if (this.map && this.map instanceof google.maps.Map) {
+
+          }
+      },
+    });
+  })();
+  </script>
+</polymer-element>
+<polymer-element name="google-map-overlayview-marker" extends="google-map-overlayview" >
+  <script>
+    Polymer('google-map-overlayview-marker',{
+      position:null,
+      draggable : false ,
+      getDraggable : function() {
+        return this.draggable;
+      },
+      getPosition : function() {
+        return this.position;
+      },
+      ready : function() {
+        this.super();
+        this.style.position="absolute";
+      },
+      draw_ : function() {
+        var projection = this.overlay.getProjection();
+        var zoom = this.overlay.getMap().getZoom();
+        var size = 25;
+        var position = projection.fromLatLngToDivPixel(this.position);
+        this.style.left = (position.x - size/2) +"px";
+        this.style.top = (position.y - size/2) +"px";
+      }
+  });
+  </script>
+</polymer-element>
