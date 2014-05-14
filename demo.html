@@ -74,113 +74,122 @@
 <body unresolved>
 
 
-  <polymer-element name="my-css-pie" constructor="MyCssPie" attributes="colors size percentages">
-   <template>
-     <style>
-       :host {
-         display:inline-block;
-       }
-       #background  {
-         width:{{size}}px;
-         height:{{size}}px;
-         position:relative;
-         border-radius:{{size}}px;
-         background-color:{{baseColor}};
-       }
-       .slice {
-         position:absolute;
-         top:0px;
-         left:0px;
-         width:{{size}}px;
-         height:{{size}}px;
-         border-radius :{{size}}px;
-       }
-       .pie  {
-         position:absolute;
-         top:0px;
-         left:0px;
-         width:{{size}}px;
-         height:{{size}}px;
-         border-radius :{{size}}px;
-       }
-     </style>
-     <div id="container">
-         <div id="background" style="width:{{size}}px;height:{{size}}px;border-radius:{{size}}px;background-color:{{baseColor}};">
-           <template repeat="{{slice,sliceIndex in slices}}">
-             <template if="{{slice.percentage <= 50}}">
-               <div class="slice" style="-webkit-transform:rotate({{slice.beforeDegree}}deg);transform:rotate({{slice.beforeDegree}}deg);clip:rect(0px,{{size}}px,{{size}}px,{{size/2}}px);width:{{size}}px;height:{{size}}px;border-radius :{{size}}px;">
-                  <div class="pie" style="-webkit-transform:rotate({{slice.degree}}deg);transform:rotate({{slice.degree}}deg);clip:rect(0px,{{size/2}}px,{{size}}px,0px);background-color:{{slice.backgroundColor}};width:{{size}}px;height:{{size}}px;border-radius :{{size}}px;">
-                  </div>
-               </div>
-             </template>
-              <template if="{{slice.percentage > 50}}">
-                <div class="slice" style="-webkit-transform:rotate({{slice.beforeDegree}}deg);transform:rotate({{slice.beforeDegree}}deg);clip:rect(0px,{{size}}px,{{size}}px,{{(size-100)/2}}px);width:{{size}}px;height:{{size}}px;border-radius :{{size}}px;">
-                  <div class="pie" style="-webkit-transform:rotate(180deg);transform:rotate(180deg);background-color:{{slice.backgroundColor}};">
-                  </div>
+<polymer-element name="my-css-pie" constructor="MyCssPie" attributes="colors size percentages">
+ <template>
+   <style>
+     :host {
+       display:inline-block;
+     }
+     #background  {
+       width:{{size}}px;
+       height:{{size}}px;
+       position:relative;
+       border-radius:{{size}}px;
+       background-color:{{baseColor}};
+     }
+     .slice {
+       position:absolute;
+       top:0px;
+       left:0px;
+       width:{{size}}px;
+       height:{{size}}px;
+       border-radius :{{size}}px;
+     }
+     .pie  {
+       position:absolute;
+       top:0px;
+       left:0px;
+       width:{{size}}px;
+       height:{{size}}px;
+       border-radius :{{size}}px;
+     }
+   </style>
+   <div id="container">
+       <div id="background" style="width:{{size}}px;height:{{size}}px;border-radius:{{size}}px;background-color:{{baseColor}};">
+         <template repeat="{{slice,sliceIndex in slices}}">
+           <template if="{{slice.percentage <= 50}}">
+             <div class="slice" style="-webkit-transform:rotate({{slice.beforeDegree}}deg);transform:rotate({{slice.beforeDegree}}deg);clip:rect(0px,{{size}}px,{{size}}px,{{size/2}}px);width:{{size}}px;height:{{size}}px;border-radius :{{size}}px;">
+                <div class="pie" style="-webkit-transform:rotate({{slice.degree}}deg);transform:rotate({{slice.degree}}deg);clip:rect(0px,{{size/2}}px,{{size}}px,0px);background-color:{{slice.backgroundColor}};width:{{size}}px;height:{{size}}px;border-radius :{{size}}px;">
                 </div>
-                <div class="slice" style="-webkit-transform:rotate({{180+slice.beforeDegree}}deg);transform:rotate({{180+slice.beforeDegree}}deg);clip:rect(0px,{{size}}px,{{size}}px,{{size/2}}px);width:{{size}}px;height:{{size}}px;border-radius :{{size}}px;">
-                  <div class="pie" style="-webkit-transform:rotate({{slice.degree}}deg);transform:rotate({{slice.degree}}deg);clip:rect(0px,{{size/2}}px,{{size}}px,{{size}}px);background-color:{{slice.backgroundColor}};width:{{size}}px;height:{{size}}px;border-radius :{{size}}px;">
-                  </div>
-                </div>
-              </template>
+             </div>
            </template>
-         </div>
-     </div>
-    </template>
-    <script>
-       (function() {
+            <template if="{{slice.percentage > 50}}">
+              <div class="slice" style="-webkit-transform:rotate({{slice.beforeDegree}}deg);transform:rotate({{slice.beforeDegree}}deg);clip:rect(0px,{{size}}px,{{size}}px,{{(size-100)/2}}px);width:{{size}}px;height:{{size}}px;border-radius :{{size}}px;">
+                <div class="pie" style="-webkit-transform:rotate(180deg);transform:rotate(180deg);background-color:{{slice.backgroundColor}};width:{{size}}px;height:{{size}}px;border-radius :{{size}}px;clip:rect(0px,{{size/2}}px,{{size}}px,0px)">
+                </div>
+              </div>
+              <div class="slice" style="-webkit-transform:rotate({{180+ (sliceIndex == 0 ? slice.beforeDegree : (slice.beforeDegree -1))}}deg);transform:rotate({{180+(sliceIndex == 0 ? slice.beforeDegree : (slice.beforeDegree -1))}}deg);clip:rect(0px,{{size}}px,{{size}}px,{{size/2}}px);width:{{size}}px;height:{{size}}px;border-radius:{{size}}px;">
+                <div class="pie" style="-webkit-transform:rotate({{(sliceIndex == 0 ? slice.degree : (slice.degree +1))}}deg);transform:rotate({{(sliceIndex == 0 ? slice.degree : (slice.degree +1))}}deg);clip:rect(0px,{{size/2}}px,{{size}}px,0px);background-color:{{slice.backgroundColor}};width:{{size}}px;height:{{size}}px;border-radius :{{size}}px;">
+                </div>
+              </div>
+            </template>
+         </template>
+       </div>
+   </div>
+  </template>
+  <script>
+     (function() {
 
-         var DEFAULT_COLORS  =  ["#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c", "#98df8a", "#d62728", "#ff9896", "#9467bd", "#c5b0d5", "#8c564b", "#c49c94", "#e377c2", "#f7b6d2", "#7f7f7f", "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf", "#9edae5"];
+       var DEFAULT_COLORS20  =  ["#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c", "#98df8a", "#d62728", "#ff9896", "#9467bd", "#c5b0d5", "#8c564b", "#c49c94", "#e377c2", "#f7b6d2", "#7f7f7f", "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf", "#9edae5"];
+       var DEFAULT_COLORS10  =  ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"];
 
 
-         Polymer('my-css-pie',{
-           colors : null,
-           percentages: null,
-           size : 50,
-           slices : null,
-           baseColor : "transparent",
-           observe : {
-             percentages : 'render_',
-             colors : 'render_',
-             size : 'render_'
-           },
-           created : function() {
-             this.colors = this.colors || DEFAULT_COLORS;
-             this.percentages = this.percentages || [];
-           },
+       Polymer('my-css-pie',{
+         colors : null,
+         percentages: null,
+         size : 50,
+         slices : null,
+         useSystemColors_ : true,
+         baseColor : "transparent",
+         observe : {
+           percentages : 'render_',
+           size : 'render_'
+         },
+         created : function() {
+           this.percentages = this.percentages || [];
+         },
+         render_ : function() {
 
-           render_ : function() {
-              slices = [];
-              var beforeDegree = 0;
-              var degree = 0;
-              for (var i =0;i<this.percentages.length;i++) {
-                var piePercentage = this.percentages[i];
-                var slice = {percentage:piePercentage,size:this.size,backgroundColor:this.colors[i]};
-                if(piePercentage<=50) {
-                  degree = parseFloat((180*piePercentage)/50);
-                  slice.beforeDegree = beforeDegree;
-                  slice.degree = degree;
-                  beforeDegree +=degree;
-                }
-                else {
-                    degree = parseFloat(((piePercentage-50)*180)/50);
-                    slice.beforeDegree =  beforeDegree;
-                    if (i!= 0) {
-                      slice.beforeDegree = slice.beforeDegree -1;
-                      slice.degree = slice.degree +1;
-                    }
-                    beforeDegree += (180+degree);
-                }
-                slices.push(slice);
+            if (this.colors == null || this.useSystemColors_) {
+              if (this.percentages.length > 10) {
+                this.colors = DEFAULT_COLORS20;
               }
-              this.slices = slices;
-           }
+              else {
+                this.colors = DEFAULT_COLORS10;
+              }
+            }
+            slices = [];
+            var beforeDegree = 0;
+            var degree = 0;
+            for (var i =0;i<this.percentages.length;i++) {
+              var piePercentage = this.percentages[i];
+              var slice = {percentage:piePercentage,size:this.size,backgroundColor:this.colors[i]};
+              if(piePercentage<=50) {
+                degree = parseFloat((180*piePercentage)/50);
+                slice.beforeDegree = beforeDegree;
+                slice.degree = degree;
+                beforeDegree +=degree;
+              }
+              else {
+                  degree = parseFloat(((piePercentage-50)*180)/50);
+                  slice.beforeDegree =  beforeDegree;
+                  slice.degree = degree;
+                  if (i!= 0) {
+                  //  slice.beforeDegree = slice.beforeDegree -1;
+                    //slice.degree = slice.degree +1;
+                  }
+                  beforeDegree += (180+degree);
+              }
+              slices.push(slice);
+            }
+            this.slices = slices;
+         }
 
-       })
-     })();
-    </script>
+     })
+   })();
+  </script>
 
- </polymer-element>
+</polymer-element>
 
 <polymer-element name ="my-custom-clustericon" >
 <template>
@@ -227,11 +236,16 @@
        this.pieChart = this.$.pie
      },
      clusterChanged : function() {
-        if (!this.cluster)
+        if (!this.cluster || !this.cluster.markers)
           return;
         this.iconOffset =  ["15px","15px"];
         this.pieChart.percentages = this.data;
         this.pieChart.size = 30;
+        this.text = this.cluster.markers.length;
+        this.$.text.style.width = this.size+"px";
+        this.$.text.style.lineHeight = this.size+"px";
+        this.$.text.style.top = this.textOffset[0];
+        this.$.text.style.left = this.textOffset[1];
         this.text = this.cluster.markers.length;
      }
    });
