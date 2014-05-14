@@ -370,7 +370,29 @@ By default it wraps a `<google-map-defaulticon>` element.
           if (!cDraggingMapByCluster) {
             var theBounds;
             var mz;
-            var mc = cClusterIcon.mc;
+            var mc = cClusterIcon.cluster.mc;
+            if (!mc.zoomOnClick)
+              return;
+            mz = mc.maxZoom;
+            var theBounds = cClusterIcon.cluster.getBounds();
+            this.getMap().fitBounds(theBounds);
+            // There is a fix for Issue 170 here:
+            cClusterIcon.async(function() {
+              mc.getMap().fitBounds(theBounds);
+              // Don't zoom beyond the max zoom level
+              if (mz !== null && (mc.getMap().getZoom() > mz)) {
+                mc.getMap().setZoom(mz + 1);
+              }
+            },null,100);
+                  // Prevent event propagation to the map:
+            e.cancelBubble = true;
+            if (e.stopPropagation) {
+              e.stopPropagation();
+            }
+            /**
+             * This event is fired when the a cluster marker is clicked.
+             * @event clickcluster
+             */
             cClusterIcon.fire("clickcluster",cClusterIcon.cluster);
           }
         });
@@ -420,7 +442,7 @@ It helps to cluster markers on a google-map together
 @status alpha
 @url github.io
 -->
-<polymer-element name="google-map-markerclusterer" extends="google-map-overlayview" attributes="batchSize fitToMarkers markers map gridSize styles maxZoom minimumClusterSize averageCenter">
+<polymer-element name="google-map-markerclusterer" extends="google-map-overlayview"  attributes="batchSize fitToMarkers markers map gridSize styles maxZoom minimumClusterSize averageCenter zoomOnClick">
 
   <template>
     <google-maps-api apiKey="{{apiKey}}" version="{{version}}" sensor="{{sensor}}" on-api-load="{{mapApiLoaded}}"></google-maps-api>
@@ -450,7 +472,7 @@ It helps to cluster markers on a google-map together
      var i;
      var bounds = new google.maps.LatLngBounds(this.center, this.center);
      for (i = 0; i < this.markers.length; i++) {
-       bounds.extend(markers[i].getPosition());
+       bounds.extend(this.markers[i].getPosition());
      }
      return bounds;
    };
@@ -639,6 +661,15 @@ It helps to cluster markers on a google-map together
        * @default null
        */
       maxZoom : null,
+
+      /**
+       * If set, the map is zoomed far enough that all markers of the cluster fit inside the viewport (Default: true).
+       *
+       * @attribute zoomOnClick
+       * @type boolean
+       * @default true
+       */
+      zoomOnClick: true,
       clusterIconTemplate_ : null,
       observe : {
         gridSize:'repaint',
