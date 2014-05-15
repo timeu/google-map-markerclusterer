@@ -1,6 +1,6 @@
 {
   "name": "google-map-markerclusterer",
-  "private": true,
+  "private": false,
   "dependencies": {
     "polymer": "Polymer/polymer#master",
     "google-map": "PolymerLabs/google-map#master",
