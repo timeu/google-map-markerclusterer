@@ -2,10 +2,10 @@
 
 > Port of [Markerclusterer-Plus](http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html) as a Web Component using Polymer.
 
-![Markerclusterer-Plus](http://timeu.github.io/google-map-markerclusterer/preview.gif "google-map-markerclusterer")
+![Markerclusterer-Plus](https://raw.githubusercontent.com/timeu/google-map-markerclusterer/master/preview.gif "google-map-markerclusterer")
 
 ## Demo
-> [Check it live](http://timeu.github.io/google-map-markerclusterer/components/google-map-markerclusterer/demo.html).
+> [Check it live](http://timeu.github.io/google-map-markerclusterer/components/google-map-markerclusterer/demo/index.html).
 
 ## Install
 
@@ -22,7 +22,7 @@ Or [download as ZIP](https://github.com/timeu/google-map-markerclusterer/archive
 1. Import Web Components' polyfill:
 
   ```html
-<script src="bower_components/platform/platform.js"></script>
+<script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
   ```
 
 2. Import Custom Element:
@@ -34,12 +34,12 @@ Or [download as ZIP](https://github.com/timeu/google-map-markerclusterer/archive
 3. Start using it!
 
   ```html
-  <polymer-element name="my-app">
+  <template is="dom-bind" id="app">
     <template>
       <google-map-markerclusterer map="{{map}}"></google-map-markerclusterer>
       <google-map map="{{map}}"></google-map>
     </template>
-  </polymer-element>
+  </template>
   
   <my-app></my-app>
   ```
@@ -48,7 +48,7 @@ Or [download as ZIP](https://github.com/timeu/google-map-markerclusterer/archive
 
   ```javascript
   var gmap = document.querySelector('google-map');
-  gmap.addEventListener('api-load', function(e) {
+  gmap.addEventListener('google-map-ready', function(e) {
     document.querySelector('google-map-markerclusterer').map = this.map;
   });
   ```
@@ -58,44 +58,10 @@ Or [download as ZIP](https://github.com/timeu/google-map-markerclusterer/archive
 
 See the [component page](http://timeu.github.io/google-map-markerclusterer) for more information.
 
-Attribute | Options         | Default                    | Description
----       | ---             | ---                        | ---
-`map` | google.maps.Map object | null | the google-maps object
-`markers`    | array (`<google-map-marker>` or `<google-map-overlayview-marker>`)    | null | The markers to be clustered
-`batchSize`   | number           | `2000`                  | BatchSize specifies the amount of markers that should be processed per run.
-`ignoreHidden` | boolean | false                  | If set ignores hidden markers when creating the clusters.
-`gridSize`|  number | 60 | Specifies the size of the grid for each cluster in pixel.
-`minimumClusterSize` | number | 2 | Sepcifies the minimum number of markers to show a cluster.
-`averageCenter` | boolean | false | If set, the center of the cluster is set to the average of all locations of its containing markers.
-`maxZoom` | number  |  null | Specifies the maximum zoom at which individual markers are shown.
-`zoomOnClick` | boolean | true | If set, the map is zoomed far enough that all markers of the cluster fit inside the viewport.
-`styles` | array of objects | null | Specifies the style (icon, offset) for the cluster markers. 
-
-## Methods
-
-Method     | Parameters     | Returns            | Description
----        | ---            | ---                | ---
-`clearMarkers()` | None.          | Nothing.           | Removes all clusters and markers from the map and also removes all markers managed by the clsuterer.
-
-##Events
-
-Event      | Description
----        | ---
-`clusteringbegin`  | Triggers the google-map-markerclusterer begins clustering markers.
-`clusterend`    | Triggers when the google-map-markerclusterer stops clustering markers.
-`clickcluster` | Triggers when a cluster is clicked.
-`mouseovercluster` | Triggers when the mouse moves over a cluster.
-`mouseoutcluster` | Triggers when the mouse moves out of a cluster.
-
 
 ##Custom markers
 
-Instead of the default markers `<google-map-marker>` also custom markers can be used bei either 
-
- - extending `<google-map-overlayview-marker>` 
- - wrapping a custom-element (i.e `<my-element>` inside of a `<google-map-overlayview-marker>`)
-
-See [demo](http://timeu.github.io/google-map-markerclusterer/components/google-map-markerclusterer/demo.html) page for an example.
+Instead of the default markers `<google-map-marker>` also custom markers can be used by implementing the behavior: `Markerclusterer.GoogleMapOverlayViewMarkerBehavior`
 
 ##Custom cluster markers
 
@@ -103,7 +69,7 @@ There are 2 ways to have custom cluster markers:
 
 ### Using the styles attribute
 
-Pass an array of objects to the styles attribute of the `<google-map-markerclusterer>`: 
+Pass an array of objects to the styles property of the `<google-map-markerclusterer>`: 
 
 ```Javascript
 var styles = [{
@@ -133,7 +99,6 @@ var styles = [{
 }]
 ```
 
-
 ```Html
 <google-map-markerclusterer styles="{{styles}}"></google-map-markerclusterer>
 ```
@@ -146,19 +111,17 @@ markerclusterer.styles = styles;
 
 ###Wrapping a custom element
 
-If the use-case is more advanced than just what the styles attribute provides, it's possible to specify a custom element as a replacement for the default cluster marker. There are two ways to do that: 
- - extend `<google-map-clustericon>` element 
- - wrapping a custom-element (i.e `<my-element>` inside of a `<google-map-clustericon>`)
+If the use-case is more advanced than just what the styles attribute provides, it's possible to specify a custom element as a replacement for the default cluster marker. Create a custom element (i.e `<my-element>`) that implements the `Markerclusterer.ClusterIconBehavior` behavior and add it to the `google-map-markerclusterer`.   
+**Important:** Make sure to add a *cluster-icon* classname to your custom cluster icon element.
+
 
 ```Html
 <google-map-markerclusterer>
-   <google-map-clustericon>
-       <my-element />
-   </google-map-clustericon>
+   <my-element class="cluster-icon" />
 </google-map-markerclusterer>
 ```
-There is an example on the [demo](http://timeu.github.io/google-map-markerclusterer/components/google-map-markerclusterer/demo.html) page.
 
+The various customizations can be viewed on the [demo page](http://timeu.github.io/google-map-markerclusterer/components/google-map-markerclusterer/demo/) page.
 
 
 ## Browser Support
