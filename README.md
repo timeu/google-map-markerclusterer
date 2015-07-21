@@ -35,10 +35,8 @@ Or [download as ZIP](https://github.com/timeu/google-map-markerclusterer/archive
 
   ```html
   <template is="dom-bind" id="app">
-    <template>
       <google-map-markerclusterer map="{{map}}"></google-map-markerclusterer>
       <google-map map="{{map}}"></google-map>
-    </template>
   </template>
   
   <my-app></my-app>
