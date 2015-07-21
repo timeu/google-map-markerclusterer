@@ -119,6 +119,8 @@ If the use-case is more advanced than just what the styles attribute provides, i
 </google-map-markerclusterer>
 ```
 
+You can implement the abstract `updateMarkers(markers)` method of the `Markerclusterer.ClusterIconBehavior` to react to changes to the cluster.
+
 The various customizations can be viewed on the [demo page](http://timeu.github.io/google-map-markerclusterer/components/google-map-markerclusterer/demo/) page.
 
 
