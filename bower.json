@@ -1,12 +1,6 @@
 {
   "name": "google-map-markerclusterer",
-  "private": false,
-  "dependencies": {
-    "polymer": "Polymer/polymer#master",
-    "google-map": "PolymerLabs/google-map#master",
-    "google-apis": "PolymerLabs/google-apis#master"
-  },
-  "version": "0.0.1",
+  "version": "1.0.0",
   "authors": [
     "Ümit Seren <uemit.seren@gmail.com>"
   ],
@@ -23,6 +17,15 @@
     "bower_components",
     "../",
     "test",
-    "tests"
+    "demo"
   ]
+  ,
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0",
+    "google-map": "GoogleWebComponents/google-map#^1.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  }
 }
