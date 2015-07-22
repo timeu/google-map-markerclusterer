@@ -243,6 +243,7 @@ a `<google-map-defaulticon>` element.
 
         this._listeners.click =  google.maps.event.addDomListener(this, 'click', function (e) {
           cMouseDownInCluster = false;
+          this.fire('google-map-markercluster-click');
           if (!cDraggingMapByCluster) {
             var theBounds;
             var mz;
@@ -266,7 +267,6 @@ a `<google-map-defaulticon>` element.
             if (e.stopPropagation) {
               e.stopPropagation();
             }
-            this.fire('google-map-markercluster-click',this);
           }
         }.bind(this));
 
