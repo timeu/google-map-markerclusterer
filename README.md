@@ -40,11 +40,11 @@ Or [download as ZIP](https://github.com/timeu/google-map-markerclusterer/archive
       <google-map map="{{map}}"></google-map>
     </template>
   </template>
-  
+
   <my-app></my-app>
   ```
 
-  or using javascript: 
+  or using javascript:
 
   ```javascript
   var gmap = document.querySelector('google-map');
@@ -65,11 +65,11 @@ Instead of the default markers `<google-map-marker>` also custom markers can be 
 
 ##Custom cluster markers
 
-There are 2 ways to have custom cluster markers: 
+There are 2 ways to have custom cluster markers:
 
 ### Using the styles attribute
 
-Pass an array of objects to the styles property of the `<google-map-markerclusterer>`: 
+Pass an array of objects to the styles property of the `<google-map-markerclusterer>`:
 
 ```Javascript
 var styles = [{
@@ -111,7 +111,7 @@ markerclusterer.styles = styles;
 
 ###Wrapping a custom element
 
-If the use-case is more advanced than just what the styles attribute provides, it's possible to specify a custom element as a replacement for the default cluster marker. Create a custom element (i.e `<my-element>`) that implements the `Markerclusterer.ClusterIconBehavior` behavior and add it to the `google-map-markerclusterer`.   
+If the use-case is more advanced than just what the styles attribute provides, it's possible to specify a custom element as a replacement for the default cluster marker. Create a custom element (i.e `<my-element>`) that implements the `Markerclusterer.ClusterIconBehavior` behavior and add it to the `google-map-markerclusterer`.
 **Important:** Make sure to add a *cluster-icon* classname to your custom cluster icon element.
 
 
