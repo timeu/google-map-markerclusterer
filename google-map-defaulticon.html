@@ -27,45 +27,45 @@
   </template>
 </dom-module>
 <script>
+  /* global Markerclusterer */
   (function() {
      var DEFAULT_STYLES = [
        {
          url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/m1.png',
-         width: "53px",
-         height: "52px",
+         width: '53px',
+         height: '52px',
          textColor: 'black',
-         textSize: "11px"
+         textSize: '11px'
        },
        {
          url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/m2.png',
-         width: "56px",
-         height: "56px",
+         width: '56px',
+         height: '56px',
          textColor: 'black',
-         textSize: "11px"
+         textSize: '11px'
        },
        {
          url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/m3.png',
-         width: "66px",
-         height: "66px",
+         width: '66px',
+         height: '66px',
          textColor: 'black',
-         textSize: "12px"
+         textSize: '12px'
        },
        {
          url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/m4.png',
-         width: "78px",
-         height: "78px",
+         width: '78px',
+         height: '78px',
          textColor: 'black',
-         textSize: "13px"
+         textSize: '13px'
        },
        {
          url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/m5.png',
-         width: "90px",
-         height: "90px",
+         width: '90px',
+         height: '90px',
          textColor: 'black',
-         textSize: "14px"
+         textSize: '14px'
        }
      ];
-     var ACTIVE_STYLES = DEFAULT_STYLES;
 
      Polymer({
 
@@ -87,7 +87,7 @@
        */
         _iconStyle : {
           type: Object,
-          value: function() {return {}}
+          value: function() {return {};}
         }
       },
       observers: [
@@ -103,10 +103,8 @@
           dv = parseInt(dv / 10, 10);
           index++;
         }
-        var index = Math.max(0, Math.min(index, numStyles) - 1);
-        return index;
+        return Math.max(0, Math.min(index, numStyles) - 1);
       },
-
       /**
        * Returns the text that should be displayed
        */
@@ -118,14 +116,14 @@
        * Observer function that is called when either the `markers` or `styles` is changed.
        */
       _updateCustom: function(markers,styles) {
-          styles = styles || DEFAULT_STYLES
+          styles = styles || DEFAULT_STYLES;
           // check also cluster.markers because remove on cluster will also delete the markers field
           if (!markers || !styles ) {
             return;
           }
           this._iconStyle = styles[this._calcActiveStyleIndex(markers.length,styles.length)];
-          var iconOffset = this._iconStyle.anchorIcon ||  [parseInt(this._iconStyle.height)/2+"px",parseInt(this._iconStyle.width)/2+"px"];
-          var textOffset = this._iconStyle.anchorText || ["0px","0px"];
+          var iconOffset = this._iconStyle.anchorIcon ||  [parseInt(this._iconStyle.height)/2+'px',parseInt(this._iconStyle.width)/2+'px'];
+          var textOffset = this._iconStyle.anchorText || ['0px','0px'];
           this.$.text.style.left = textOffset[1];
           this.$.text.style.top = textOffset[0];
           this.$.text.style.width = this._iconStyle.width;
@@ -133,11 +131,11 @@
           this.$.text.style.lineHeight = this._iconStyle.height;
           this.$.text.style.color = this._iconStyle.textColor;
           this.$.text.style.fontSize = this._iconStyle.textSize;
-          this.style.left = "-"+iconOffset[1];
-          this.style.top = "-"+iconOffset[0];
-          this.$.text.style.position="absolute";
+          this.style.left = '-'+iconOffset[1];
+          this.style.top = '-'+iconOffset[0];
+          this.$.text.style.position='absolute';
       }
-    })
+    });
   })();
 </script>
-</polymer-element>
+</dom-module>

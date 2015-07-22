@@ -24,6 +24,7 @@ It is also possible to embed another `custom element` inside a `<google-map-over
   </template>
 </dom-module>
 <script>
+    /* global Markerclusterer */
     Polymer({
       is: 'google-map-overlayview',
       behaviors: [Markerclusterer.GoogleMapOverlayViewBehavior],

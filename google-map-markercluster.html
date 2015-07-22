@@ -1,6 +1,8 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="google-map-overlayview-behavior.html">
-<!-- The `google-map-markercluster` is an internal element that is used by `google-map-markerclusterer`. By default it wraps
+
+<!--
+The `google-map-markercluster` is an internal element that is used by `google-map-markerclusterer`. By default it wraps
 a `<google-map-defaulticon>` element.
 -->
 <dom-module id="google-map-markercluster">
@@ -16,6 +18,9 @@ a `<google-map-defaulticon>` element.
   </template>
   <script>
     Polymer({
+
+      /* global Markerclusterer */
+	    /* global google */
 
       is: 'google-map-markercluster',
       behaviors: [Markerclusterer.GoogleMapOverlayViewBehavior],
@@ -77,8 +82,8 @@ a `<google-map-defaulticon>` element.
       draw : function() {
         if (this.visible) {
           var pos = this.getPosFromLatLng(this.center);
-          this.style.top = pos.y + "px";
-          this.style.left = pos.x + "px";
+          this.style.top = pos.y + 'px';
+          this.style.left = pos.x + 'px';
         }
       },
 
@@ -206,7 +211,7 @@ a `<google-map-defaulticon>` element.
         this._clearListener('mouseover');
         this._clearListener('click');
         this._clearListener('mousedown');
-        this._clearListener('bounds_changed');
+        this._clearListener('boundsChanged');
         google.maps.event.clearInstanceListeners(this);
         if (this.parentNode) {
           Polymer.dom(this.parentNode).removeChild(this);
@@ -227,24 +232,25 @@ a `<google-map-defaulticon>` element.
         this.overlay.getPanes().overlayMouseTarget.appendChild(this);
 
         // Fix for Issue 157
-        this._listeners['bounds_changed'] = google.maps.event.addListener(this.map, "bounds_changed", function () {
+        this._listeners.boundsChanged = google.maps.event.addListener(this.map, 'bounds_changed', function () {
           cDraggingMapByCluster = cMouseDownInCluster;
         });
 
-        this._listeners['mousedown'] = google.maps.event.addDomListener(this, "mousedown", function () {
+        this._listeners.mousedown = google.maps.event.addDomListener(this, 'mousedown', function () {
           cMouseDownInCluster = true;
           cDraggingMapByCluster = false;
         });
 
-        this._listeners['click'] =  google.maps.event.addDomListener(this, "click", function (e) {
+        this._listeners.click =  google.maps.event.addDomListener(this, 'click', function (e) {
           cMouseDownInCluster = false;
           if (!cDraggingMapByCluster) {
             var theBounds;
             var mz;
-            if (!this.zoomOnClick)
+						if (!this.zoomOnClick) {
               return;
+						}
             mz = this.maxZoom;
-            var theBounds = this._getBounds();
+            theBounds = this._getBounds();
             this.map.fitBounds(theBounds);
             // There is a fix for Issue 170 here:
            /* this.async(function() {
@@ -260,7 +266,7 @@ a `<google-map-defaulticon>` element.
             if (e.stopPropagation) {
               e.stopPropagation();
             }
-            this.fire("google-map-markercluster-click",this);
+            this.fire('google-map-markercluster-click',this);
           }
         }.bind(this));
 
@@ -270,7 +276,7 @@ a `<google-map-defaulticon>` element.
 
       },
       _forwardEvent: function(name) {
-        this._listeners[name] = google.maps.event.addDomListener(this, name, function(event) {
+        this._listeners[name] = google.maps.event.addDomListener(this, name, function() {
           this.fire('google-map-markercluster-' + name);
         }.bind(this));
       },

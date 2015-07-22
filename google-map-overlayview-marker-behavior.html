@@ -2,6 +2,7 @@
 <link rel="import" href="google-map-overlayview-behavior.html">
 
 <script>
+  /* global google */
 	var Markerclusterer = Markerclusterer || {};
 	/**
 	 * Use `Markerclusterer.GoogleMapOverlayViewMarkerBehavior` to implement elements that should be displayed as `Marker` on a `google-map` using an overlayview
@@ -33,7 +34,7 @@
 			}
 		},
 		ready: function() {
-			this.style.position="absolute";
+			this.style.position='absolute';
 		},
 		/**
 		 * Returns the position of the marker
@@ -80,10 +81,10 @@
 		update: function(position,size) {
 			var projection = this.overlay.getProjection();
 	        var mapPos = projection.fromLatLngToDivPixel(position);
-	        this.style.left = (mapPos.x - size/2) +"px";
-	        this.style.top = (mapPos.y - size/2) +"px";
+	        this.style.left = (mapPos.x - size/2) +'px';
+	        this.style.top = (mapPos.y - size/2) +'px';
 		}
-	 }
+	 };
 	 /** @polymerBehavior GoogleMapOverlayViewMarkerBehavior */
-	 Markerclusterer.GoogleMapOverlayViewMarkerBehavior = [ Markerclusterer.GoogleMapOverlayViewBehavior, Markerclusterer.GoogleMapOverlayViewMarkerBehaviorImpl ]
+	 Markerclusterer.GoogleMapOverlayViewMarkerBehavior = [ Markerclusterer.GoogleMapOverlayViewBehavior, Markerclusterer.GoogleMapOverlayViewMarkerBehaviorImpl ];
 </script>

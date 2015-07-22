@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <script>
+  /* global google */
   var Markerclusterer = Markerclusterer || {};
   /**
    * Use `Markerclusterer.GoogleMapOverlayViewBehavior` to implement elements that should be displayed on a `google-map` using an overlayview
@@ -35,9 +36,10 @@
      * Sets the callbacks (onAdd, draw and onRemove) to the current instance
      */
     _initOverlay: function() {
-      if (typeof google === 'object' && typeof google.maps === 'object')  {
-        if (this.overlay && this.overlay instanceof google.maps.OverlayView)
+    	if (typeof google === 'object' && typeof google.maps === 'object')  {
+				if (this.overlay && this.overlay instanceof google.maps.OverlayView) {
            return;
+				}
         this._overlayView.prototype = new google.maps.OverlayView();
         this._overlayView.prototype.onAdd = this.onAdd.bind(this);
         this._overlayView.prototype.draw = this.draw.bind(this);
@@ -61,7 +63,7 @@
     _mapChanged: function(map) {
       this._initOverlay();
       if (this.overlay &&  this.overlay instanceof google.maps.OverlayView) {
-          this.overlay.setMap(this.map);
+          this.overlay.setMap(map);
         }
     },
 

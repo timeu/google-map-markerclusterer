@@ -26,6 +26,8 @@ It helps to cluster markers on a google-map together
 	<template><content id="clustericontemplate" select=".cluster-icon"></content></template>
 
   <script>
+    /* global google */
+		/* global Markerclusterer */
     (function() {
 
       Polymer({
@@ -67,7 +69,7 @@ It helps to cluster markers on a google-map together
            */
           markers: {
             type:Array,
-            value: function() {return []},
+            value: function() {return [];},
             observer:'_markersChanged'
           },
 
@@ -160,7 +162,7 @@ It helps to cluster markers on a google-map together
               clusterIconTemplateContent = clusterIconTemplateContent[0];
             }
             else {
-              clusterIconTemplateContent = document.createElement("google-map-defaulticon");
+              clusterIconTemplateContent = document.createElement('google-map-defaulticon');
             }
             this._clusterIconTemplate = document.createElement('google-map-markercluster');
             Polymer.dom(this._clusterIconTemplate).appendChild(clusterIconTemplateContent);
@@ -203,18 +205,18 @@ It helps to cluster markers on a google-map together
 
           // Add the map event listeners
           this.listeners = [
-            google.maps.event.addListener(this.map, "zoom_changed", function () {
+            google.maps.event.addListener(this.map, 'zoom_changed', function () {
               mc._resetClusters();
               // Workaround for this Google bug: when map is at level 0 and "-" of
               // zoom slider is clicked, a "zoom_changed" event is fired even though
               // the map doesn't zoom out any further. In this situation, no "idle"
               // event is triggered so the cluster markers that have been removed
               // do not get redrawn. Same goes for a zoom in at maxZoom.
-              if (this.getZoom() === (this.get("minZoom") || 0) || this.getZoom() === this.get("maxZoom")) {
+              if (this.getZoom() === (this.get('minZoom') || 0) || this.getZoom() === this.get('maxZoom')) {
                 //google.maps.event.trigger(this, "idle");
               }
             }),
-            google.maps.event.addListener(this.map, "idle", function () {
+            google.maps.event.addListener(this.map, 'idle', function () {
               this._computeClusters(0);
             }.bind(this))
           ];
@@ -276,9 +278,9 @@ It helps to cluster markers on a google-map together
 
           // Cancel previous batch processing if we're working on the first batch:
           if (iFirst === 0) {
-            this.fire("google-map-markercluster-clustering-start");
+            this.fire('google-map-markercluster-clustering-start');
 
-            if (typeof this.timerRefStatic !== "undefined") {
+            if (typeof this.timerRefStatic !== 'undefined') {
               clearTimeout(this.timerRefStatic);
               delete this.timerRefStatic;
             }
@@ -309,11 +311,11 @@ It helps to cluster markers on a google-map together
 
           if (iLast < this.markers.length) {
             this.timerRefStatic = setTimeout(function () {
-              cMarkerClusterer._computeClusters(iLast);
+              mc._computeClusters(iLast);
             }, 0);
           } else {
             delete this.timerRefStatic;
-            this.fire("google-map-markercluster-clustering-end");
+            this.fire('google-map-markercluster-clustering-end');
           }
         },
 
@@ -322,7 +324,6 @@ It helps to cluster markers on a google-map together
          * This will put all clustered markers back on the map
          */
         onRemove: function() {
-          var i;
           // Put all the managed markers back on the map:
           for (var i = 0, m; m = this.markers[i]; ++i) {
             if (m.getMap() !== this.map) {
@@ -384,16 +385,17 @@ It helps to cluster markers on a google-map together
          * Initializes the markers and setups dragend event if markers is draggable.
          */
         _initMarkers: function(markers) {
+          var mc = this;
+          var dragendFunc = function() {
+            if (mc.isReady) {
+              this.isAdded = false;
+              mc.repaint();
+            }
+          };
           for (var i =0;i<markers.length;i++) {
-            marker = markers[i];
+            var marker = markers[i];
             if (marker.getDraggable()) {
-              var mc = this;
-              google.maps.event.addListener(marker, "dragend", function () {
-                if (mc.isReady) {
-                  this.isAdded = false;
-                  mc.repaint();
-                }
-              });
+              google.maps.event.addListener(marker, 'dragend', dragendFunc);
             }
             marker.isAdded = false;
           }
@@ -404,13 +406,14 @@ It helps to cluster markers on a google-map together
          * @param {Boolean} opt_hide specifies if the markers should be removed entirely from the map.
          * @param {Array} markers the markers that should be reset
          */
-        _resetMarkers: function(opt_hide,markers) {
-          if (!markers)
+        _resetMarkers: function(optHide,markers) {
+				 if (!markers) {
             return;
+					}
           for (var i = 0; i < markers.length; i++) {
               var marker = markers[i];
               marker.isAdded = false;
-              if (opt_hide) {
+              if (optHide) {
                 marker.setMap(null);
               }
            }
@@ -441,7 +444,7 @@ It helps to cluster markers on a google-map together
               }
           }
         }
-      })
+      });
     })();
   </script>
 </dom-module>
