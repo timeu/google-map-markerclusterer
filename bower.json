@@ -9,15 +9,13 @@
     "Polymer",
     "web-components"
   ],
+  "main": "google-map-markerclusterer.html",
   "license": "MIT",
   "homepage": "https://github.com/timeu/google-map-markerclusterer",
   "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "../",
-    "test",
-    "demo"
+    "/.*",
+    "/test/",
+    "/demo/"
   ]
   ,
   "dependencies": {
