@@ -2,7 +2,7 @@
 
 > Port of [Markerclusterer-Plus](http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html) as a Web Component using Polymer.
 
-![Markerclusterer-Plus](https://raw.githubusercontent.com/timeu/google-map-markerclusterer/master/preview.gif "google-map-markerclusterer")
+![Markerclusterer-Plus](preview.gif "google-map-markerclusterer")
 
 ## Demo
 > [Check it live](http://timeu.github.io/google-map-markerclusterer/components/google-map-markerclusterer/demo/index.html).
