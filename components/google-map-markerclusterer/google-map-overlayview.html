@@ -1,0 +1,32 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="google-map-overlayview-behavior.html">
+<link rel="import" href="../google-apis/google-apis.html">
+
+<!--
+The `google-map-overlayview` element is a generic overlay container element.
+It maps to the OverlayView of google maps v3.
+
+
+<b>Example</b>:
+
+    <google-map-overlayview><some-element /></google-map-overlayview>
+
+For example to embed a simple `<img>` element into a overlay use this code:
+
+    <google-map-overlayview><img src="URL" /></google-map-overlayview>
+
+It is also possible to embed another `custom element` inside a `<google-map-overlayview>`
+
+-->
+<dom-module id="google-map-overlayview">
+	<template >
+      <content id="overlayContent"></content>
+  </template>
+</dom-module>
+<script>
+    /* global Markerclusterer */
+    Polymer({
+      is: 'google-map-overlayview',
+      behaviors: [Markerclusterer.GoogleMapOverlayViewBehavior],
+    });
+</script>

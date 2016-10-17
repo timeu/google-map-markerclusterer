@@ -1,0 +1,26 @@
+<link rel="import" href="../polymer/polymer.html">
+<script>
+   var Markerclusterer = Markerclusterer || {};
+   /**
+   * Use `Markerclusterer.ClusterIconBehavior` to implement elements that should display a custom cluster icon.
+   * Users should implement the `updateMarkers` function if they need to customize based on the markers that are contained in the cluster.
+   * @polymerBehavior Markerclusterer.ClusterIconBehavior
+   */
+    Markerclusterer.ClusterIconBehavior = {
+      properties: {
+        /**
+         * The markers that are contained in the cluster.
+         */
+        markers: {
+          type: Array,
+          observer: 'updateMarkers'
+        }
+      },
+      /**
+       * Observer function that is called when the `markers` Array is changed.
+       */
+      updateMarkers: function(markers) {
+		  	//abstract
+      }
+    };
+</script>

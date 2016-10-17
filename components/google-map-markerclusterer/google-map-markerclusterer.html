@@ -1,0 +1,450 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="google-map-overlayview-behavior.html">
+<link rel="import" href="google-map-markercluster.html">
+<link rel="import" href="google-map-defaulticon.html">
+<link rel="import" href="google-map-overlayview-marker-behavior.html">
+
+
+<!--
+The `google-map-markerclusterer` element is a port of markercluster-plus to polymer.
+It helps to cluster markers on a google-map together
+
+##### Example
+
+    <google-map-markerclusterer></google-map-markerclusterer>
+
+##### Example -  custom cluster marker
+
+    <google-map-markerclusterer>
+      <my-custom-clustericon class="cluster-icon"></my-custom-clustericon>
+    </google-map-markerclusterer>
+
+@demo
+-->
+<dom-module id="google-map-markerclusterer">
+
+	<template><content id="clustericontemplate" select=".cluster-icon"></content></template>
+
+  <script>
+    /* global google */
+		/* global Markerclusterer */
+    (function() {
+
+      Polymer({
+        is: 'google-map-markerclusterer',
+
+        behaviors: [Markerclusterer.GoogleMapOverlayViewBehavior],
+
+        /**
+         * Fired when the clustering of the markers starts.
+         * @event google-map-markercluster-clustering-start
+         */
+
+        /**
+         * Fired when the clustering of the markers ends.
+         * @event google-map-markercluster-clustering-end
+         */
+
+        /**
+         * Fired when the mouse enters the area of the cluster.
+         * @param {google.maps.MouseEvent} event The mouse event.
+         * @event google-map-markercluster-mouseover
+         */
+
+        /**
+         * Fired when the mouse leaves the area of the cluster.
+         * @param {google.maps.MouseEvent} event The mouse event.
+         * @event google-map-markercluster-mouseout
+         */
+
+        /**
+         * Fired when the cluster was clicked.
+         * @param {google.maps.MouseEvent} event The mouse event.
+         * @event google-map-markercluster-click
+         */
+        properties: {
+
+          /**
+           * Markers that should be clustered.
+           */
+          markers: {
+            type:Array,
+            value: function() {return [];},
+            observer:'_markersChanged'
+          },
+
+          /**
+           * If set, the zoom level is set such that all markers (google-map-marker children) are brought into view.
+           */
+          fitToMarkers: {
+            type: Boolean,
+            value: false,
+            observer: '_fitToMarkersChanged'
+          },
+
+          /**
+           * BatchSize specifies the amount of markers that should be processed per run.
+           */
+          batchSize : {
+            type: Number,
+            value: 2000
+          },
+
+          /**
+           * If set ignores hidden markers when creating the clusters.
+           */
+          ignoreHidden : false,
+
+          /**
+           * Specifies the size of the grid for each cluster in pixel.
+           */
+          gridSize:{
+            type: Number,
+            value: 60
+          },
+
+          /**
+           *  Sepcifies the minimum number of markers to be clustered.
+           */
+          minimumClusterSize : {
+            type: Number,
+            value: 2
+          },
+
+          /**
+           * If set, the center of the cluster is set to the average of all locations of its containing markers.
+           * Otherwise the cluster center will be the one of the first marker added to it.
+           */
+          averageCenter : {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * Specifies the maximum zoom at which individual markers are shown.
+           * By default no maxZoom is set.
+           */
+          maxZoom : {
+            type: Number,
+            value: null
+          },
+
+          /**
+           * If set, the map is zoomed far enough that all markers of the cluster fit inside the viewport (Default: true).
+           */
+          zoomOnClick: {
+            type:Boolean,
+            value:true
+          },
+          /**
+           * Styles for the google-map-defaulticon element.
+           */
+          styles : {
+            type: Array,
+            value: null,
+            observer:'_changeStyles'
+          }
+        },
+        observers: [
+          '_optionChanged(gridSize,averageCenter,minimumClusterSize,maxZoom)'
+        ],
+
+        created: function() {
+          this.clusters = [];
+          this.listeners = [];
+          // TODO move to overlayview behavior
+          this.isReady = false;
+          this._clusterIconTemplate = null;
+        },
+        attached: function() {
+            var clusterIconTemplateContent = Polymer.dom(this.$.clustericontemplate).getDistributedNodes();
+            if (clusterIconTemplateContent.length > 0) {
+              clusterIconTemplateContent = clusterIconTemplateContent[0];
+            }
+            else {
+              clusterIconTemplateContent = document.createElement('google-map-defaulticon');
+            }
+            this._clusterIconTemplate = document.createElement('google-map-markercluster');
+            Polymer.dom(this._clusterIconTemplate).appendChild(clusterIconTemplateContent);
+        },
+
+        /**
+         * Calculates the distance between two latlng locations in km.
+         *
+         * @param {google.maps.LatLng} p1 The first lat lng point.
+         * @param {google.maps.LatLng} p2 The second lat lng point.
+         * @return {number} The distance between the two points in km.
+         * @see http://www.movable-type.co.uk/scripts/latlong.html
+        */
+        _distanceBetweenPoints : function (p1, p2) {
+          var R = 6371; // Radius of the Earth in km
+          var dLat = (p2.lat() - p1.lat()) * Math.PI / 180;
+          var dLon = (p2.lng() - p1.lng()) * Math.PI / 180;
+          var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(p1.lat() * Math.PI / 180) * Math.cos(p2.lat() * Math.PI / 180) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+          var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          var d = R * c;
+          return d;
+        },
+        /**
+         * Returns if the marker is inside the specified bounds
+         */
+        _isMarkerInBounds : function (marker, bounds) {
+          return bounds.contains(marker.getPosition());
+        },
+
+        /**
+         * Called when the markerclusterer is added to the map.
+         * Events are initialized.
+         */
+        onAdd : function() {
+          var mc = this;
+          this.isReady = true;
+          this.debounce('repaint', this.repaint);
+
+          // Add the map event listeners
+          this.listeners = [
+            google.maps.event.addListener(this.map, 'zoom_changed', function () {
+              mc._resetClusters();
+              // Workaround for this Google bug: when map is at level 0 and "-" of
+              // zoom slider is clicked, a "zoom_changed" event is fired even though
+              // the map doesn't zoom out any further. In this situation, no "idle"
+              // event is triggered so the cluster markers that have been removed
+              // do not get redrawn. Same goes for a zoom in at maxZoom.
+              if (this.getZoom() === (this.get('minZoom') || 0) || this.getZoom() === this.get('maxZoom')) {
+                //google.maps.event.trigger(this, "idle");
+              }
+            }),
+            google.maps.event.addListener(this.map, 'idle', function () {
+              this._computeClusters(0);
+            }.bind(this))
+          ];
+        },
+
+      /**
+       * Adds a marker to a cluster, or creates a new cluster.
+       */
+        _addToClosestCluster : function (marker) {
+          var i, d, cluster, center;
+          var distance = 40000; // Some large number
+          var clusterToAddTo = null;
+            for (i = 0; i < this.clusters.length; i++) {
+              cluster = this.clusters[i];
+              center = cluster.center;
+              if (center) {
+                d = this._distanceBetweenPoints(center, marker.getPosition());
+                if (d < distance) {
+                  distance = d;
+                  clusterToAddTo = cluster;
+                }
+              }
+            }
+
+          if (clusterToAddTo && clusterToAddTo.isMarkerInClusterBounds(marker)) {
+            clusterToAddTo.addMarker(marker);
+          } else {
+            cluster = Polymer.dom(this._clusterIconTemplate).cloneNode(true);
+            // WORKAROUND for
+            var defaultIcon = Polymer.dom(cluster).querySelector('google-map-defaulticon');
+            if (defaultIcon) {
+                defaultIcon.styles = this.styles;
+            }
+            cluster.map = this.map;
+            cluster.minimumClusterSize = this.minimumClusterSize;
+            cluster.maxZoom = this.maxZoom;
+            cluster.gridSize = this.gridSize;
+            cluster.zoomOnClick = this.zoomOnClick;
+            cluster.averageCenter = this.averageCenter;
+            cluster.addMarker(marker);
+            this.clusters.push(cluster);
+          }
+        },
+
+        /**
+        * Creates the clusters. This is done in batches to avoid timeout errors
+        *  in some browsers when there is a huge number of markers.
+        *
+        * @param {number} iFirst The index of the first marker in the batch of
+        *  markers to be added to clusters.
+        */
+        _computeClusters : function (iFirst) {
+          var i, marker;
+          var mapBounds;
+          var mc = this;
+          if (!this.isReady || !this.markers) {
+            return;
+          }
+
+          // Cancel previous batch processing if we're working on the first batch:
+          if (iFirst === 0) {
+            this.fire('google-map-markercluster-clustering-start');
+
+            if (typeof this.timerRefStatic !== 'undefined') {
+              clearTimeout(this.timerRefStatic);
+              delete this.timerRefStatic;
+            }
+          }
+
+          // Get our current map view bounds.
+          // Create a new bounds object so we don't affect the map.
+          //
+          // See Comments 9 & 11 on Issue 3651 relating to this workaround for a Google Maps bug:
+          if (this.map.getZoom() > 3) {
+            mapBounds = new google.maps.LatLngBounds(this.map.getBounds().getSouthWest(),
+              this.map.getBounds().getNorthEast());
+          } else {
+            mapBounds = new google.maps.LatLngBounds(new google.maps.LatLng(85.02070771743472, -178.48388434375), new google.maps.LatLng(-85.08136444384544, 178.00048865625));
+          }
+          var bounds = this.getExtendedBounds(mapBounds,this.gridSize);
+
+          var iLast = Math.min(iFirst + this.batchSize, this.markers.length);
+
+          for (i = iFirst; i < iLast; i++) {
+            marker = this.markers[i];
+            if (!marker.isAdded && this._isMarkerInBounds(marker, bounds)) {
+              if (!this.ignoreHidden || (this.ignoreHidden && marker.getVisible())) {
+                this._addToClosestCluster(marker);
+              }
+            }
+          }
+
+          if (iLast < this.markers.length) {
+            this.timerRefStatic = setTimeout(function () {
+              mc._computeClusters(iLast);
+            }, 0);
+          } else {
+            delete this.timerRefStatic;
+            this.fire('google-map-markercluster-clustering-end');
+          }
+        },
+
+        /**
+         * Callback that is called when the markerclusterer is removed from the map.
+         * This will put all clustered markers back on the map
+         */
+        onRemove: function() {
+          // Put all the managed markers back on the map:
+          for (var i = 0, m; m = this.markers[i]; ++i) {
+            if (m.getMap() !== this.map) {
+              m.setMap(this.map);
+            }
+          }
+        },
+
+        /**
+         * Observer function that is called when `fitToMarkers` is changed.
+         */
+        _fitToMarkersChanged : function() {
+          // TODO(ericbidelman): respect user's zoom level.
+          if (this.map && this.fitToMarkers) {
+            var latLngBounds = new google.maps.LatLngBounds();
+            for (var i = 0, m; m = this.markers[i]; ++i) {
+              latLngBounds.extend(
+                  new google.maps.LatLng(m.latitude, m.longitude));
+            }
+
+            // For one marker, don't alter zoom, just center it.
+            if (this.markers.length > 1) {
+              this.map.fitBounds(latLngBounds);
+            }
+            this.map.setCenter(latLngBounds.getCenter());
+          }
+        },
+
+        /**
+         * Observer function that is called if one of the options is changed.
+         * Debounce calls to `repaint`
+         */
+        _optionChanged: function(markers,gridSize,averageCenter,minimumClusterSize,maxZoom) {
+           this.debounce('repaint', this.repaint);
+        },
+
+        /**
+         * Repaint will re-create and re-draw the clusters.
+         */
+         repaint : function() {
+          this.cancelDebouncer('repaint');
+          this._resetClusters();
+          this._computeClusters(0);
+        },
+
+        /**
+         * Removes the clusters and resets the markers.
+         */
+        _resetClusters : function () {
+          // Remove all the clusters
+          for (var i = 0; i < this.clusters.length; i++) {
+            this.clusters[i].map = null;
+          }
+          this.clusters = [];
+          this._resetMarkers(false,this.markers);
+        },
+
+        /**
+         * Initializes the markers and setups dragend event if markers is draggable.
+         */
+        _initMarkers: function(markers) {
+          var mc = this;
+          var dragendFunc = function() {
+            if (mc.isReady) {
+              this.isAdded = false;
+              mc.repaint();
+            }
+          };
+          for (var i =0;i<markers.length;i++) {
+            var marker = markers[i];
+            if (marker.getDraggable()) {
+              google.maps.event.addListener(marker, 'dragend', dragendFunc);
+            }
+            marker.isAdded = false;
+          }
+        },
+
+        /**
+         * this will reset the marker.
+         * @param {Boolean} opt_hide specifies if the markers should be removed entirely from the map.
+         * @param {Array} markers the markers that should be reset
+         */
+        _resetMarkers: function(optHide,markers) {
+				 if (!markers) {
+            return;
+					}
+          for (var i = 0; i < markers.length; i++) {
+              var marker = markers[i];
+              marker.isAdded = false;
+              if (optHide) {
+                marker.setMap(null);
+              }
+           }
+        },
+        /**
+         * Observer function that is called when the `markers` Array is changed.
+         * Will reset the current markers and debounce call to `repaint`
+         */
+        _markersChanged: function(newMarkers,oldMarkers) {
+          // remove the old markers
+          if (oldMarkers) {
+            this._resetMarkers(true,oldMarkers);
+          }
+          this._initMarkers(newMarkers);
+          this.debounce('repaint', this.repaint);
+        },
+
+        /**
+         * Observer function that is called when the styles are changed.
+         * Only used when the `google-map-defaulticon` is used.
+         */
+        _changeStyles: function(styles) {
+          var defaultIcon = Polymer.dom(this._clusterIconTemplate).querySelector('google-map-defaulticon');
+          if (defaultIcon) {
+              defaultIcon.styles = styles;
+              for (var i = 0; i < this.clusters.length; i++) {
+                Polymer.dom(this.clusters[i]).firstElementChild.styles = styles;
+              }
+          }
+        }
+      });
+    })();
+  </script>
+</dom-module>
