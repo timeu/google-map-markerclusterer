@@ -73,27 +73,27 @@
   </template>
   <script>
     (function() {
-
+        var BASE_IMAGE_URL = 'https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/gh-pages/images/';
         var _STYLES = [[{
-            url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/people35.png',
+            url: BASE_IMAGE_URL + 'people35.png',
             width: "35px",
             height: "35px",
             textColor: '#ff00ff',
             textSize: "10px"
         }, {
-            url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/people45.png',
+            url: BASE_IMAGE_URL + 'people45.png',
             width: "45px",
             height: "45px",
             textColor: '#ff0000',
             textSize: "11px"
         }, {
-            url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/people55.png',
+            url: BASE_IMAGE_URL + 'people55.png',
             width: "55px",
             height: "55px",
             textColor: '#ffffff',
             textSize: "12px"
         }], [{
-            url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/conv30.png',
+            url: BASE_IMAGE_URL + 'conv30.png',
             width: "30px",
             height: "27px",
             anchorText: ["-3px", "0px"],
@@ -101,7 +101,7 @@
             textColor: '#ff00ff',
             textSize: "10px"
         }, {
-            url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/conv40.png',
+            url: BASE_IMAGE_URL + 'conv40.png',
             width: "40px",
             height: "36px",
             anchorText: ["-4px", "0px"],
@@ -109,7 +109,7 @@
             textColor: '#ff0000',
             textSize: "11px"
         }, {
-            url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/conv50.png',
+            url: BASE_IMAGE_URL + 'conv50.png',
             width: "50px",
             height: "45px",
             anchorText: ["-5px", "0px"],
@@ -117,21 +117,21 @@
             textColor: '#0000ff',
             textSize: "12px"
         }], [{
-            url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/heart30.png',
+            url: BASE_IMAGE_URL + 'heart30.png',
             width: "30px",
             height: "26px",
             anchorIcon: ["26px", "15px"],
             textColor: '#ff00ff',
             textSize: "10px"
         }, {
-            url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/heart40.png',
+            url: BASE_IMAGE_URL + 'heart40.png',
             width: "40px",
             height: "35px",
             anchorIcon: ["35px", "20px"],
             textColor: '#ff0000',
             textSize: "11px"
         }, {
-            url: 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/images/heart50.png',
+            url: BASE_IMAGE_URL + 'heart50.png',
             width: "50px",
             height: "44px",
             anchorIcon: ["44px", "25px"],
@@ -140,7 +140,7 @@
 
         Polymer({
           is: 'markerclusterer-container',
-          
+
           properties: {
             markers: {
               type: Array,
@@ -171,7 +171,7 @@
             averageCenter: {
               type: Boolean,
               value:false
-              
+
            },
             activeStyle : {
               type:Number,
@@ -187,7 +187,7 @@
             return Polymer.dom(this.$.custom_cluster_icon).getDistributedNodes().length > 0;
           },
           refresh:  function()  {
-            this.markersToDisplay = this.markers; 
+            this.markersToDisplay = this.markers;
           },
           markersChanged : function(newValue,oldValue) {
             this.markersToDisplay = newValue;
