@@ -93,7 +93,10 @@ It helps to cluster markers on a google-map together
           /**
            * If set ignores hidden markers when creating the clusters.
            */
-          ignoreHidden : false,
+          ignoreHidden: {
+            type: Boolean,
+            value: false
+          },
 
           /**
            * Specifies the size of the grid for each cluster in pixel.
