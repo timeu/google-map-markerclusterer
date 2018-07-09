@@ -1,39 +1,39 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="google-map-overlayview-behavior.html">
 <link rel="import" href="google-map-markercluster.html">
 <link rel="import" href="google-map-defaulticon.html">
-<link rel="import" href="google-map-overlayview-marker-behavior.html">
+<link rel="import" href="../polymer/lib/utils/debounce.html">
+<link rel="import" href="../polymer/lib/utils/flattened-nodes-observer.html">
 
-
-<!--
-The `google-map-markerclusterer` element is a port of markercluster-plus to polymer.
-It helps to cluster markers on a google-map together
-
-##### Example
-
-    <google-map-markerclusterer></google-map-markerclusterer>
-
-##### Example -  custom cluster marker
-
-    <google-map-markerclusterer>
-      <my-custom-clustericon class="cluster-icon"></my-custom-clustericon>
-    </google-map-markerclusterer>
-
-@demo
--->
 <dom-module id="google-map-markerclusterer">
 
-	<template><content id="clustericontemplate" select=".cluster-icon"></content></template>
+	<template><slot id="clustericontemplate" name="cluster-icon"></slot></template>
 
   <script>
     /* global google */
 		/* global Markerclusterer */
     (function() {
 
-      Polymer({
-        is: 'google-map-markerclusterer',
-
-        behaviors: [Markerclusterer.GoogleMapOverlayViewBehavior],
+      /*
+       * The `google-map-markerclusterer` element is a port of markercluster-plus to polymer.
+       * It helps to cluster markers on a google-map together
+       * ##### Example
+       *     <google-map-markerclusterer></google-map-markerclusterer>
+       *
+       * ##### Example -  custom cluster marker
+       *
+       *     <google-map-markerclusterer>
+       *       <my-custom-clustericon class="cluster-icon"></my-custom-clustericon>
+       *     </google-map-markerclusterer>
+       *
+       *
+       * @customElement
+       * @polymer
+       * @demo demo/index.html
+       * @demo demo/simple.html
+       */
+      class GoogleMapMarkerclusterer extends GoogleMapOverlayViewBehavior(Polymer.Element) {
+        static get is() { return 'google-map-markerclusterer'; }
 
         /**
          * Fired when the clustering of the markers starts.
@@ -62,114 +62,130 @@ It helps to cluster markers on a google-map together
          * @param {google.maps.MouseEvent} event The mouse event.
          * @event google-map-markercluster-click
          */
-        properties: {
 
-          /**
-           * Markers that should be clustered.
-           */
-          markers: {
-            type:Array,
-            value: function() {return [];},
-            observer:'_markersChanged'
-          },
+        static get properties() {
+          return {
+            /**
+             * Markers that should be clustered.
+             */
+            markers: {
+              type:Array,
+              value: function() {return [];},
+              observer:'_markersChanged'
+            },
 
-          /**
-           * If set, the zoom level is set such that all markers (google-map-marker children) are brought into view.
-           */
-          fitToMarkers: {
-            type: Boolean,
-            value: false,
-            observer: '_fitToMarkersChanged'
-          },
+            /**
+            * If set, the zoom level is set such that all markers (google-map-marker children) are brought into view.
+            */
+            fitToMarkers: {
+              type: Boolean,
+              value: false,
+              observer: '_fitToMarkersChanged'
+            },
 
-          /**
-           * BatchSize specifies the amount of markers that should be processed per run.
-           */
-          batchSize : {
-            type: Number,
-            value: 2000
-          },
+            /**
+            * BatchSize specifies the amount of markers that should be processed per run.
+            */
+            batchSize : {
+              type: Number,
+              value: 2000
+            },
 
-          /**
-           * If set ignores hidden markers when creating the clusters.
-           */
-          ignoreHidden: {
-            type: Boolean,
-            value: false
-          },
+            /**
+            * If set ignores hidden markers when creating the clusters.
+            */
+            ignoreHidden: {
+              type: Boolean,
+              value: false
+            },
 
-          /**
-           * Specifies the size of the grid for each cluster in pixel.
-           */
-          gridSize:{
-            type: Number,
-            value: 60
-          },
+            /**
+            * Specifies the size of the grid for each cluster in pixel.
+            */
+            gridSize:{
+              type: Number,
+              value: 60
+            },
 
-          /**
-           *  Sepcifies the minimum number of markers to be clustered.
-           */
-          minimumClusterSize : {
-            type: Number,
-            value: 2
-          },
+            /**
+            *  Sepcifies the minimum number of markers to be clustered.
+            */
+            minimumClusterSize : {
+              type: Number,
+              value: 2
+            },
 
-          /**
-           * If set, the center of the cluster is set to the average of all locations of its containing markers.
-           * Otherwise the cluster center will be the one of the first marker added to it.
-           */
-          averageCenter : {
-            type: Boolean,
-            value: false
-          },
+            /**
+            * If set, the center of the cluster is set to the average of all locations of its containing markers.
+            * Otherwise the cluster center will be the one of the first marker added to it.
+            */
+            averageCenter : {
+              type: Boolean,
+              value: false
+            },
 
-          /**
-           * Specifies the maximum zoom at which individual markers are shown.
-           * By default no maxZoom is set.
-           */
-          maxZoom : {
-            type: Number,
-            value: null
-          },
+            /**
+            * Specifies the maximum zoom at which individual markers are shown.
+            * By default no maxZoom is set.
+            */
+            maxZoom : {
+              type: Number,
+              value: null
+            },
 
-          /**
-           * If set, the map is zoomed far enough that all markers of the cluster fit inside the viewport (Default: true).
-           */
-          zoomOnClick: {
-            type:Boolean,
-            value:true
-          },
-          /**
-           * Styles for the google-map-defaulticon element.
-           */
-          styles : {
-            type: Array,
-            value: null,
-            observer:'_changeStyles'
+            /**
+            * If set, the map is zoomed far enough that all markers of the cluster fit inside the viewport (Default: true).
+            */
+            zoomOnClick: {
+              type:Boolean,
+              value:true
+            },
+            /**
+            * Styles for the google-map-defaulticon element.
+            */
+            styles : {
+              type: Array,
+              value: null,
+              observer:'_changeStyles'
+            }
           }
-        },
-        observers: [
-          '_optionChanged(gridSize,averageCenter,minimumClusterSize,maxZoom)'
-        ],
+        }
 
-        created: function() {
+        static get observers() {
+          return [
+            '_optionChanged(gridSize,averageCenter,minimumClusterSize,maxZoom)'
+          ]
+        }
+
+        constructor() {
+          super();
           this.clusters = [];
           this.listeners = [];
           // TODO move to overlayview behavior
           this.isReady = false;
           this._clusterIconTemplate = null;
-        },
-        attached: function() {
-            var clusterIconTemplateContent = Polymer.dom(this.$.clustericontemplate).getDistributedNodes();
-            if (clusterIconTemplateContent.length > 0) {
-              clusterIconTemplateContent = clusterIconTemplateContent[0];
-            }
-            else {
-              clusterIconTemplateContent = document.createElement('google-map-defaulticon');
-            }
-            this._clusterIconTemplate = document.createElement('google-map-markercluster');
-            Polymer.dom(this._clusterIconTemplate).appendChild(clusterIconTemplateContent);
-        },
+        }
+
+        ready() {
+          super.ready();
+          this._boundHandler = this._initClusterIconTemplate.bind(this);
+          setTimeout(this._boundHandler);
+          //this.$.clustericontemplate.addEventListener('slotchange', this._boundHandler); # not possible because we take it out of the slot and add it below to the google-map-markercluster
+        }
+
+        _initClusterIconTemplate() {
+          var clusterIconTemplateContent = this.$.clustericontemplate.assignedNodes({flatten:true})
+          .filter(n => n.nodeType === Node.ELEMENT_NODE);
+          if (clusterIconTemplateContent.length > 0) {
+            clusterIconTemplateContent = clusterIconTemplateContent[0];
+            clusterIconTemplateContent.removeAttribute("slot");
+          }
+          else {
+            clusterIconTemplateContent = document.createElement('google-map-defaulticon');
+          }
+          this._clusterIconTemplate = document.createElement('google-map-markercluster');
+          this._clusterIconTemplate.appendChild(clusterIconTemplateContent);
+        }
 
         /**
          * Calculates the distance between two latlng locations in km.
@@ -179,7 +195,7 @@ It helps to cluster markers on a google-map together
          * @return {number} The distance between the two points in km.
          * @see http://www.movable-type.co.uk/scripts/latlong.html
         */
-        _distanceBetweenPoints : function (p1, p2) {
+        _distanceBetweenPoints(p1, p2) {
           var R = 6371; // Radius of the Earth in km
           var dLat = (p2.lat() - p1.lat()) * Math.PI / 180;
           var dLon = (p2.lng() - p1.lng()) * Math.PI / 180;
@@ -189,22 +205,23 @@ It helps to cluster markers on a google-map together
           var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
           var d = R * c;
           return d;
-        },
+        }
+
         /**
          * Returns if the marker is inside the specified bounds
          */
-        _isMarkerInBounds : function (marker, bounds) {
+        _isMarkerInBounds(marker, bounds) {
           return bounds.contains(marker.getPosition());
-        },
+        }
 
         /**
          * Called when the markerclusterer is added to the map.
          * Events are initialized.
          */
-        onAdd : function() {
+        onAdd() {
           var mc = this;
           this.isReady = true;
-          this.debounce('repaint', this.repaint);
+          this._repaintDebouncer = Polymer.Debouncer.debounce(this._repaintDebouncer, Polymer.Async.timeOut.after(250), this.repaint.bind(this));
 
           // Add the map event listeners
           this.listeners = [
@@ -223,12 +240,12 @@ It helps to cluster markers on a google-map together
               this._computeClusters(0);
             }.bind(this))
           ];
-        },
+        }
 
-      /**
-       * Adds a marker to a cluster, or creates a new cluster.
-       */
-        _addToClosestCluster : function (marker) {
+        /**
+         * Adds a marker to a cluster, or creates a new cluster.
+         */
+        _addToClosestCluster(marker) {
           var i, d, cluster, center;
           var distance = 40000; // Some large number
           var clusterToAddTo = null;
@@ -247,22 +264,27 @@ It helps to cluster markers on a google-map together
           if (clusterToAddTo && clusterToAddTo.isMarkerInClusterBounds(marker)) {
             clusterToAddTo.addMarker(marker);
           } else {
-            cluster = Polymer.dom(this._clusterIconTemplate).cloneNode(true);
+            cluster = this._clusterIconTemplate.cloneNode(true);
+            cluster._enableProperties();
+            //this.shadowRoot.appendChild(cluster);
             // WORKAROUND for
-            var defaultIcon = Polymer.dom(cluster).querySelector('google-map-defaulticon');
+            /*var defaultIcon = cluster.querySelector('google-map-defaulticon');
             if (defaultIcon) {
                 defaultIcon.styles = this.styles;
-            }
+            }*/
+            cluster.styles = this.styles;
             cluster.map = this.map;
             cluster.minimumClusterSize = this.minimumClusterSize;
             cluster.maxZoom = this.maxZoom;
             cluster.gridSize = this.gridSize;
             cluster.zoomOnClick = this.zoomOnClick;
             cluster.averageCenter = this.averageCenter;
+
             cluster.addMarker(marker);
             this.clusters.push(cluster);
+
           }
-        },
+        }
 
         /**
         * Creates the clusters. This is done in batches to avoid timeout errors
@@ -271,7 +293,7 @@ It helps to cluster markers on a google-map together
         * @param {number} iFirst The index of the first marker in the batch of
         *  markers to be added to clusters.
         */
-        _computeClusters : function (iFirst) {
+        _computeClusters(iFirst) {
           var i, marker;
           var mapBounds;
           var mc = this;
@@ -281,7 +303,7 @@ It helps to cluster markers on a google-map together
 
           // Cancel previous batch processing if we're working on the first batch:
           if (iFirst === 0) {
-            this.fire('google-map-markercluster-clustering-start');
+            this.dispatchEvent(new CustomEvent('google-map-markercluster-clustering-start', { bubbles: true, composed: true }));
 
             if (typeof this.timerRefStatic !== 'undefined') {
               clearTimeout(this.timerRefStatic);
@@ -318,27 +340,27 @@ It helps to cluster markers on a google-map together
             }, 0);
           } else {
             delete this.timerRefStatic;
-            this.fire('google-map-markercluster-clustering-end');
+            this.dispatchEvent(new CustomEvent('google-map-markercluster-clustering-end', { bubbles: true, composed: true }));
           }
-        },
+        }
 
         /**
          * Callback that is called when the markerclusterer is removed from the map.
          * This will put all clustered markers back on the map
          */
-        onRemove: function() {
+        onRemove() {
           // Put all the managed markers back on the map:
           for (var i = 0, m; m = this.markers[i]; ++i) {
             if (m.getMap() !== this.map) {
               m.setMap(this.map);
             }
           }
-        },
+        }
 
         /**
          * Observer function that is called when `fitToMarkers` is changed.
          */
-        _fitToMarkersChanged : function() {
+        _fitToMarkersChanged() {
           // TODO(ericbidelman): respect user's zoom level.
           if (this.map && this.fitToMarkers) {
             var latLngBounds = new google.maps.LatLngBounds();
@@ -353,41 +375,40 @@ It helps to cluster markers on a google-map together
             }
             this.map.setCenter(latLngBounds.getCenter());
           }
-        },
+        }
 
         /**
          * Observer function that is called if one of the options is changed.
          * Debounce calls to `repaint`
          */
-        _optionChanged: function(markers,gridSize,averageCenter,minimumClusterSize,maxZoom) {
-           this.debounce('repaint', this.repaint);
-        },
+        _optionChanged(markers,gridSize,averageCenter,minimumClusterSize,maxZoom) {
+          this._repaintDebouncer = Polymer.Debouncer.debounce(this._repaintDebouncer, Polymer.Async.timeOut.after(250), this.repaint.bind(this));
+        }
 
         /**
          * Repaint will re-create and re-draw the clusters.
          */
-         repaint : function() {
-          this.cancelDebouncer('repaint');
+         repaint() {
           this._resetClusters();
           this._computeClusters(0);
-        },
+        }
 
         /**
          * Removes the clusters and resets the markers.
          */
-        _resetClusters : function () {
+        _resetClusters() {
           // Remove all the clusters
           for (var i = 0; i < this.clusters.length; i++) {
             this.clusters[i].map = null;
           }
           this.clusters = [];
           this._resetMarkers(false,this.markers);
-        },
+        }
 
         /**
          * Initializes the markers and setups dragend event if markers is draggable.
          */
-        _initMarkers: function(markers) {
+        _initMarkers(markers) {
           var mc = this;
           var dragendFunc = function() {
             if (mc.isReady) {
@@ -402,14 +423,14 @@ It helps to cluster markers on a google-map together
             }
             marker.isAdded = false;
           }
-        },
+        }
 
         /**
          * this will reset the marker.
          * @param {Boolean} opt_hide specifies if the markers should be removed entirely from the map.
          * @param {Array} markers the markers that should be reset
          */
-        _resetMarkers: function(optHide,markers) {
+        _resetMarkers(optHide,markers) {
 				 if (!markers) {
             return;
 					}
@@ -420,34 +441,39 @@ It helps to cluster markers on a google-map together
                 marker.setMap(null);
               }
            }
-        },
+        }
         /**
          * Observer function that is called when the `markers` Array is changed.
          * Will reset the current markers and debounce call to `repaint`
          */
-        _markersChanged: function(newMarkers,oldMarkers) {
+        _markersChanged(newMarkers,oldMarkers) {
           // remove the old markers
           if (oldMarkers) {
             this._resetMarkers(true,oldMarkers);
           }
           this._initMarkers(newMarkers);
-          this.debounce('repaint', this.repaint);
-        },
+          this._repaintDebouncer = Polymer.Debouncer.debounce(this._repaintDebouncer, Polymer.Async.timeOut.after(250),this.repaint.bind(this));
+        }
 
         /**
          * Observer function that is called when the styles are changed.
          * Only used when the `google-map-defaulticon` is used.
          */
-        _changeStyles: function(styles) {
-          var defaultIcon = Polymer.dom(this._clusterIconTemplate).querySelector('google-map-defaulticon');
+        _changeStyles(styles) {
+          if (!this._clusterIconTemplate) {
+            return;
+          }
+          var defaultIcon = this._clusterIconTemplate.querySelector('google-map-defaulticon');
           if (defaultIcon) {
               defaultIcon.styles = styles;
               for (var i = 0; i < this.clusters.length; i++) {
-                Polymer.dom(this.clusters[i]).firstElementChild.styles = styles;
+                this.clusters[i].firstElementChild.styles = styles;
               }
           }
         }
-      });
+      }
+
+      customElements.define('google-map-markerclusterer', GoogleMapMarkerclusterer);
     })();
   </script>
 </dom-module>

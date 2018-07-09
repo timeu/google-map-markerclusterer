@@ -1,34 +1,37 @@
-<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../polymer/polymer-element.html">
+<link rel="import" href="../google-map-markerclusterer.html">
+
 <dom-module id="markerclusterer-container">
-  <style>
-    #map {
+  <template>
+    <style>
+      #map {
         width:800px;
         height:400px;
-       }
-       #map-container {
-         padding: 6px;
-         border-width: 1px;
-         border-style: solid;
-         border-color: #ccc #ccc #999 #ccc;
-         -webkit-box-shadow: rgba(64, 64, 64, 0.5) 0 2px 5px;
-         -moz-box-shadow: rgba(64, 64, 64, 0.5) 0 2px 5px;
-         box-shadow: rgba(64, 64, 64, 0.1) 0 2px 5px;
-         width: 800px;
-         height:400px;
-       }
-       #minimumClusterSize {
-         width:50px;
-       }
-
-        google-map {
-          display: block;
-          height: 100%;
-        }
-  </style>
-  <template>
+      }
+      #map-container {
+        padding: 6px;
+        border-width: 1px;
+        border-style: solid;
+        border-color: #ccc #ccc #999 #ccc;
+        -webkit-box-shadow: rgba(64, 64, 64, 0.5) 0 2px 5px;
+        -moz-box-shadow: rgba(64, 64, 64, 0.5) 0 2px 5px;
+        box-shadow: rgba(64, 64, 64, 0.1) 0 2px 5px;
+        width: 800px;
+        height:400px;
+      }
+      #minimumClusterSize {
+        width:50px;
+      }
+      google-map {
+        display: block;
+        height: 100%;
+      }
+    </style>
     <div id="map-container">
       <google-map latitude="39.91" map="{{map}}" id="mapelement" longitude="116.38" zoom="2"></google-map>
-      <google-map-markerclusterer map="{{map}}" max-zoom="{{maxZoom}}" minimum-cluster-size="{{minimumClusterSize}}" grid-size="{{gridSize}}" markers="{{markersToDisplay}}" average-center="{{averageCenter}}" styles="{{styles}}"><content id="custom_cluster_icon"></content></google-map-markerclusterer>
+      <google-map-markerclusterer map="{{map}}" max-zoom="{{maxZoom}}" minimum-cluster-size="{{minimumClusterSize}}" grid-size="{{gridSize}}" markers="{{markersToDisplay}}" average-center="{{averageCenter}}" styles="{{styles}}">
+        <slot slot="cluster-icon" id="custom_cluster_icon" name="clustericon"></slot>
+      </google-map-markerclusterer>
     </div>
     <div id="inline-actions">
       <span>Max zoom level:
@@ -56,7 +59,7 @@
           <option value="80">80</option>
         </select>
       </span>
-      <span class="item" id="styleContainer" hidden$={{_isStyleVisible()}}>Cluster style:
+      <span class="item" id="styleContainer" hidden$={{_isStyleVisible}}>Cluster style:
         <select id="style" value="{{activeStyle::change}}">
           <option value="-1">Default</option>
           <option value="0">People</option>
@@ -131,76 +134,94 @@
             textColor: '#ff0000',
             textSize: "11px"
         }, {
-            url: BASE_IMAGE_URL + 'heart50.png',
+          url: BASE_IMAGE_URL + 'heart50.png',
             width: "50px",
             height: "44px",
             anchorIcon: ["44px", "25px"],
             textSize: "12px"
         }]];
+        class MarkerclustererContainer extends Polymer.Element {
+          static get is() { return 'markerclusterer-container'; }
+          static get properties() {
+            return {
+              markers: {
+                type: Array,
+                value: function() {return [];},
+                observer: 'markersChanged'
+              },
+              markersToDisplay : {
+                type:Array,
+                value: function() {return [];}
+              },
+              selectedStyle:{
+                type:Number,
+                value:0
+              },
+              maxZoom : {
+                type:Number,
+                value:null,
+              },
+              minimumClusterSize: {
+                type:Number,
+                value:2
+              },
+              gridSize: {
+                type:Number,
+                value:60,
+                observer:'_changeGridSize'
+              },
+              averageCenter: {
+                type: Boolean,
+                value:false
 
-        Polymer({
-          is: 'markerclusterer-container',
-
-          properties: {
-            markers: {
-              type: Array,
-              value: function() {return [];},
-              observer: 'markersChanged'
             },
-            markersToDisplay : {
-              type:Array,
-              value: function() {return [];}
-            },
-            selectedStyle:{
-              type:Number,
-              value:0
-            },
-            maxZoom : {
-              type:Number,
-              value:null,
-            },
-            minimumClusterSize: {
-              type:Number,
-              value:2
-            },
-            gridSize: {
-              type:Number,
-              value:60,
-              observer:'_changeGridSize'
-            },
-            averageCenter: {
-              type: Boolean,
-              value:false
-
-           },
-            activeStyle : {
-              type:Number,
-              value:-1,
-              observer:'_changeStyle'
-            },
-            map: {
-              type:Object,
-              value:null
+              activeStyle : {
+                type:Number,
+                value:-1,
+                observer:'_changeStyle'
+              },
+              map: {
+                type:Object,
+                value:null
+              }
             }
-          },
-          _isStyleVisible:  function() {
-            return Polymer.dom(this.$.custom_cluster_icon).getDistributedNodes().length > 0;
-          },
-          refresh:  function()  {
+          }
+
+          constructor() {
+            super();
+            this._isStyleVisible = true;
+          }
+
+          ready() {
+            super.ready();
+            
+            setTimeout(function() {
+              if (this.$.custom_cluster_icon.assignedNodes().length > 0) {
+                this._isStyleVisible = false;
+              }
+            }.bind(this));
+            
+
+          }
+
+          refresh()  {
             this.markersToDisplay = this.markers;
-          },
-          markersChanged : function(newValue,oldValue) {
+          }
+          markersChanged(newValue,oldValue) {
             this.markersToDisplay = newValue;
-          },
-          clickClear: function() {
+          }
+
+          clickClear() {
             this.markersToDisplay = [];
-          },
-          _changeGridSize: function(gridSize) {
+          }
+
+          _changeGridSize(gridSize) {
             if(typeof gridSize == "string") {
              this.gridSize = Number(gridSize);
             }
-          },
-          _changeStyle : function(newValue,oldValue) {
+          }
+
+          _changeStyle(newValue,oldValue) {
             newValue = Number(newValue);
             if (newValue == -1) {
               this.styles = null;
@@ -208,8 +229,10 @@
             else {
               this.styles = _STYLES[newValue];
             }
-          },
-        });
+          }
+        }
+
+        customElements.define('markerclusterer-container', MarkerclustererContainer);
       })();
   </script>
 </dom-module>

@@ -1,30 +1,20 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="google-map-overlayview-behavior.html">
 
-<!--
-The `google-map-markercluster` is an internal element that is used by `google-map-markerclusterer`. By default it wraps
-a `<google-map-defaulticon>` element.
--->
 <dom-module id="google-map-markercluster">
-  <style>
-    :host {
-
-    }
-  </style>
   <template>
-    <div hidden$={{hidden}}>
-      <content id="overlayContent"></content>
+    <div hidden$="{{hidden}}">
+      <slot id="overlayContent"></slot>
     </div>
   </template>
   <script>
-    Polymer({
-
-      /* global Markerclusterer */
-	    /* global google */
-
-      is: 'google-map-markercluster',
-      behaviors: [Markerclusterer.GoogleMapOverlayViewBehavior],
-
+    /*
+     * The `google-map-markercluster` is an internal element that is used by `google-map-markerclusterer`. By default it wraps a `<google-map-defaulticon>` element
+     * @customElement
+     * @polymer
+     */
+    class GoogleMapMarkerCluster extends GoogleMapOverlayViewBehavior(Polymer.Element) {
+      static get is() { return 'google-map-markercluster'; }
 
       /**
        * Fired when the mouse enters the area of the cluster.
@@ -43,54 +33,66 @@ a `<google-map-defaulticon>` element.
        * @param {google.maps.MouseEvent} event The mouse event.
        * @event google-map-markercluster-click
        */
-      properties: {
-        /**
-         * The center position of the cluster element (lat,lon)
-         */
-        center:{
-          type: Object,
-          value: null,
-          notify:true
-        },
-        /**
-         * When set the cluster icon is hidden
-         */
-        hidden: {
-          type:Boolean,
-          value:false
-        }
-      },
 
-      created: function() {
+      constructor() {
+        super();
         this.markers = [];
         this._listeners = {};
-      },
-      attached: function() {
-        var contents = Polymer.dom(this.$.overlayContent).getDistributedNodes();
+      }
+
+      static get properties() {
+        return {
+          /**
+           * The center position of the cluster element (lat,lon)
+           */
+          center:{
+            type: Object,
+            value: null,
+            notify:true
+          },
+          /**
+           * When set the cluster icon is hidden
+           */
+          hidden: {
+            type:Boolean,
+            value:false
+          }
+        }
+      }
+      
+      ready() {
+        super.ready();
+        this.$.overlayContent.addEventListener('slotchange', this._initClusterSubIcon.bind(this));
+        setTimeout(this._initClusterSubIcon.bind(this));        
+      }
+
+      _initClusterSubIcon() {
+        var contents = this.$.overlayContent.assignedNodes();
         if (contents.length > 0) {
           this.clusterSubIcon = contents[0];
           this.clusterSubIcon.markers = this.markers;
         }
-      },
-      detached: function() {
+      }
+
+      disconnectedCallback() {
         this.map = null;
-      },
+      }
 
       /**
        * draw callback when the cluster is drawn.
        */
-      draw : function() {
+      draw() {
         if (this.visible) {
           var pos = this.getPosFromLatLng(this.center);
           this.style.top = pos.y + 'px';
           this.style.left = pos.x + 'px';
         }
-      },
+      }
 
       /**
        * Update the icon when a marker is added
        */
-      _updateIcon : function() {
+      _updateIcon() {
         var mCount = this.markers.length;
         if (this.maxZoom !== null && this.map.getZoom() > this.maxZoom) {
          this.hidden = true;
@@ -106,12 +108,12 @@ a `<google-map-defaulticon>` element.
           this.clusterSubIcon.markers = this.markers;
         }
         this.hidden = false;
-      },
+      }
 
       /**
        * Check if the marker was already added
        */
-      _isMarkerAlreadyAdded : function(marker) {
+      _isMarkerAlreadyAdded(marker) {
         var i;
         if (this.markers.indexOf) {
           return this.markers.indexOf(marker) !== -1;
@@ -123,39 +125,39 @@ a `<google-map-defaulticon>` element.
           }
         }
         return false;
-      },
+      }
 
        /**
        * Calculates the extended bounds that is given by the contained markers.
        */
-      _calculateBounds : function () {
+      _calculateBounds() {
          var bounds = new google.maps.LatLngBounds(this.center, this.center);
          this.bounds = this.getExtendedBounds(bounds,this.gridSize);
-      },
+      }
 
       /**
        * Check if marker is inside the extended bounds.
        */
-      isMarkerInClusterBounds : function (marker) {
+      isMarkerInClusterBounds(marker) {
         return this.bounds.contains(marker.getPosition());
-      },
+      }
 
       /**
        * Calculates the bounds that is given by the contained markers.
        */
-      _getBounds : function() {
+      _getBounds() {
          var i;
          var bounds = new google.maps.LatLngBounds(this.center, this.center);
          for (i = 0; i < this.markers.length; i++) {
            bounds.extend(this.markers[i].getPosition());
          }
          return bounds;
-      },
+      }
 
       /**
        * Adds a marker to the cluster and updates the cluster icon
        */
-      addMarker: function(marker) {
+      addMarker(marker) {
         var i;
         var mCount;
         var mz;
@@ -200,13 +202,13 @@ a `<google-map-defaulticon>` element.
 
         this._updateIcon();
         return true;
-      },
+      }
 
       /**
        * onRemove callback when the cluster is removed.
        * Clears the event listeners.
        */
-      onRemove :function() {
+      onRemove() {
         this._clearListener('mouseout');
         this._clearListener('mouseover');
         this._clearListener('click');
@@ -214,16 +216,16 @@ a `<google-map-defaulticon>` element.
         this._clearListener('boundsChanged');
         google.maps.event.clearInstanceListeners(this);
         if (this.parentNode) {
-          Polymer.dom(this.parentNode).removeChild(this);
+          this.parentNode.removeChild(this);
         }
         this.markers = [];
-      },
+      }
 
       /**
        * onAdd callback when the cluster is added.
        * Event listeners for various events are setup.
        */
-      onAdd : function() {
+      onAdd() {
         this.style.position = 'absolute';
         this.style.cursor='pointer';
         var cMouseDownInCluster;
@@ -243,7 +245,7 @@ a `<google-map-defaulticon>` element.
 
         this._listeners.click =  google.maps.event.addDomListener(this, 'click', function (e) {
           cMouseDownInCluster = false;
-          this.fire('google-map-markercluster-click');
+          this.dispatchEvent(new CustomEvent('google-map-markercluster-click', { bubbles: true, composed: true }));                      
           if (!cDraggingMapByCluster) {
             var theBounds;
             var mz;
@@ -274,18 +276,21 @@ a `<google-map-defaulticon>` element.
         this._forwardEvent('mouseover');
         this._forwardEvent('mouseout');
 
-      },
-      _forwardEvent: function(name) {
-        this._listeners[name] = google.maps.event.addDomListener(this, name, function() {
-          this.fire('google-map-markercluster-' + name);
-        }.bind(this));
-      },
-      _clearListener: function(name) {
-      if (this._listeners[name]) {
-        google.maps.event.removeListener(this._listeners[name]);
-        this._listeners[name] = null;
       }
-    },
-    });
+      _forwardEvent(name) {
+        this._listeners[name] = google.maps.event.addDomListener(this, name, function() {
+          this.dispatchEvent(new CustomEvent('google-map-markercluster-' + name, { bubbles: true, composed: true }));                                
+        }.bind(this));
+      }
+
+      _clearListener(name) {
+        if (this._listeners[name]) {
+          google.maps.event.removeListener(this._listeners[name]);
+          this._listeners[name] = null;
+        }
+      }
+    }
+
+    customElements.define('google-map-markercluster', GoogleMapMarkerCluster);
   </script>
 </dom-module>

@@ -1,18 +1,22 @@
 <!doctype html>
-<html>
-<head>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-  <title>google-map-clustermarker Demo</title>
+    <title>google-map-clustermarker Demo</title>
 
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="data.json" type="text/javascript"></script>
-  <link rel="import" href="../google-map-markerclusterer.html">
-  <link rel="import" href="../../google-map/google-map.html">
-  <link rel="import" href="markerclusterer-container.html">
-  <link rel="import" href="my-custom-marker.html">
-  <link rel="import" href="my-custom-clustericon.html">
-  <style>
+    <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
 
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+
+    <script src="data.json" type="text/javascript"></script>
+    <link rel="import" href="../../google-map/google-map.html">
+    <link rel="import" href="markerclusterer-container.html">
+    <link rel="import" href="my-custom-marker.html">
+    <link rel="import" href="my-custom-clustericon.html">
+    <style>
       body {
         margin: 0;
         height: 100%;
@@ -20,84 +24,76 @@
         font-family: Arial;
         font-size: 16px;
       }
-      #customMarkerTemplate {
-
-      }
-
     </style>
 
-  <script>
-    function getMarkers() {
-       var markers = [];
+    <script>
+      function getMarkers() {
+        var markers = [];
 
-       var imageUrl = 'http://chart.apis.google.com/chart?cht=mm&chs=24x32&' +
-         'chco=FFFFFF,008CFF,000000&ext=.png';
-       var markerImage = new google.maps.MarkerImage(imageUrl,
-         new google.maps.Size(24, 32));
+        var imageUrl = 'http://chart.apis.google.com/chart?cht=mm&chs=24x32&' +
+          'chco=FFFFFF,008CFF,000000&ext=.png';
+        var markerImage = new google.maps.MarkerImage(imageUrl,
+          new google.maps.Size(24, 32));
 
-       for (var i = 0; i < 1000; ++i) {
-         var latLng = new google.maps.LatLng(data.photos[i].latitude,
-             data.photos[i].longitude)
-         var marker = new google.maps.Marker({
-          position: latLng,
-          icon: markerImage
-         });
-         markers.push(marker);
-       }
-       return markers;
-    };
-
-    function getCustomMarkers() {
-      var markers = [];
-      var customMarkerTemplate = document.createElement("my-custom-marker");
-
-      for (var i = 0; i < 1000; ++i) {
-        var latLng = new google.maps.LatLng(data.photos[i].latitude,
-            data.photos[i].longitude)
-
-        var marker = document.importNode(customMarkerTemplate);
-        marker.position = latLng;
-        markers.push(marker);
-      }
-      return markers;
-    };
-
-      function refreshMap() {
-        markers = getMarkers();
-
-       
+        for (var i = 0; i < 1000; ++i) {
+          var latLng = new google.maps.LatLng(data.photos[i].latitude,
+              data.photos[i].longitude)
+          var marker = new google.maps.Marker({
+            position: latLng,
+            icon: markerImage
+          });
+          markers.push(marker);
+        }
+        return markers;
       };
-  </script>
-</head>
-<body>
 
-  <h3>An example of `google-map-clustermarker':</h3>
-  <markerclusterer-container  id="default_markers"></markerclusterer-container>
+      function getCustomMarkers() {
+        var markers = [];
 
-  <h3>Custom markers:</h3>
-  
-  <markerclusterer-container id="custom_markers"></markerclusterer-container>
-  
-  <h3>Custom markers and custom cluster:</h3>
-  <markerclusterer-container id="custom_cluster">
-    <my-custom-clustericon class="cluster-icon"></my-custom-clustericon>
-  </markerclusterer-container>
-  
-  <script>
-      var markerClusterer = document.querySelector('#default_markers');
-      var markerClustererCustom = document.querySelector('#custom_markers');
-      var markerClustererCustom2 = document.querySelector('#custom_cluster');
-      markerClusterer.addEventListener('google-map-ready', function(e) {
-        this.markers = getMarkers();
-      });
-      markerClustererCustom.addEventListener('google-map-ready', function(e) {
-        this.markers = getCustomMarkers();
-      });
-      markerClustererCustom2.addEventListener('google-map-ready', function(e) {
-        this.markers = getCustomMarkers();
-      });
-      
-      
-  </script>
-</body>
+        for (var i = 0; i < 1000; ++i) {
+          var latLng = new google.maps.LatLng(data.photos[i].latitude,data.photos[i].longitude)
+          var marker = document.createElement("my-custom-marker");
+          marker._enableProperties();
+          marker.position = latLng;
+          markers.push(marker);
+        }
+        return markers;
+      };
+
+        function refreshMap() {
+          markers = getMarkers();
+
+
+        };
+    </script>
+  </head>
+  <body>
+
+    <h3>An example of `google-map-clustermarker':</h3>
+    <markerclusterer-container  id="default_markers"></markerclusterer-container>
+
+    <h3>Custom markers:</h3>
+
+    <markerclusterer-container id="custom_markers"></markerclusterer-container>
+
+    <h3>Custom markers and custom cluster:</h3>
+    <markerclusterer-container id="custom_cluster">
+      <my-custom-clustericon slot="clustericon"></my-custom-clustericon>
+    </markerclusterer-container>
+
+    <script>
+        var markerClusterer = document.querySelector('#default_markers');
+        var markerClustererCustom = document.querySelector('#custom_markers');
+        var markerClustererCustom2 = document.querySelector('#custom_cluster');
+        markerClusterer.addEventListener('google-map-ready', function(e) {
+          this.markers = getMarkers();
+        });
+        markerClustererCustom.addEventListener('google-map-ready', function(e) {
+          this.markers = getCustomMarkers();
+        });
+        markerClustererCustom2.addEventListener('google-map-ready', function(e) {
+          this.markers = getCustomMarkers();
+        });
+    </script>
+  </body>
 </html>
