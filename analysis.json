@@ -1,0 +1,2211 @@
+{
+  "schema_version": "1.0.0",
+  "elements": [
+    {
+      "description": "The `google-map-markercluster` is an internal element that is used by `google-map-markerclusterer`. By default it wraps a `<google-map-defaulticon>` element",
+      "summary": "",
+      "path": "google-map-markercluster.html",
+      "properties": [
+        {
+          "name": "center",
+          "type": "Object | null | undefined",
+          "description": "The center position of the cluster element (lat,lon)",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 47,
+              "column": 10
+            },
+            "end": {
+              "line": 51,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "attributeType": "Object"
+            }
+          },
+          "defaultValue": "null"
+        },
+        {
+          "name": "hidden",
+          "type": "boolean | null | undefined",
+          "description": "When set the cluster icon is hidden",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 55,
+              "column": 10
+            },
+            "end": {
+              "line": 58,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "Boolean"
+            }
+          },
+          "defaultValue": "false"
+        }
+      ],
+      "methods": [
+        {
+          "name": "connectedCallback",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 62,
+              "column": 6
+            },
+            "end": {
+              "line": 66,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_initClusterSubIcon",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 68,
+              "column": 6
+            },
+            "end": {
+              "line": 74,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "disconnectedCallback",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 76,
+              "column": 6
+            },
+            "end": {
+              "line": 78,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "draw",
+          "description": "draw callback when the cluster is drawn.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 83,
+              "column": 6
+            },
+            "end": {
+              "line": 89,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_updateIcon",
+          "description": "Update the icon when a marker is added",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 94,
+              "column": 6
+            },
+            "end": {
+              "line": 110,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_isMarkerAlreadyAdded",
+          "description": "Check if the marker was already added",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 115,
+              "column": 6
+            },
+            "end": {
+              "line": 127,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "marker"
+            }
+          ]
+        },
+        {
+          "name": "_calculateBounds",
+          "description": "Calculates the extended bounds that is given by the contained markers.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 132,
+              "column": 6
+            },
+            "end": {
+              "line": 135,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "isMarkerInClusterBounds",
+          "description": "Check if marker is inside the extended bounds.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 140,
+              "column": 6
+            },
+            "end": {
+              "line": 142,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "marker"
+            }
+          ]
+        },
+        {
+          "name": "_getBounds",
+          "description": "Calculates the bounds that is given by the contained markers.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 147,
+              "column": 6
+            },
+            "end": {
+              "line": 154,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "addMarker",
+          "description": "Adds a marker to the cluster and updates the cluster icon",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 159,
+              "column": 6
+            },
+            "end": {
+              "line": 204,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "marker"
+            }
+          ]
+        },
+        {
+          "name": "onRemove",
+          "description": "onRemove callback when the cluster is removed.\nClears the event listeners.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 210,
+              "column": 6
+            },
+            "end": {
+              "line": 221,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "onAdd",
+          "description": "onAdd callback when the cluster is added.\nEvent listeners for various events are setup.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 227,
+              "column": 6
+            },
+            "end": {
+              "line": 278,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_forwardEvent",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 279,
+              "column": 6
+            },
+            "end": {
+              "line": 283,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "name"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_clearListener",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 285,
+              "column": 6
+            },
+            "end": {
+              "line": 290,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "name"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        }
+      ],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 15,
+          "column": 4
+        },
+        "end": {
+          "line": 291,
+          "column": 5
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "name": "GoogleMapMarkerCluster",
+      "attributes": [
+        {
+          "name": "center",
+          "description": "The center position of the cluster element (lat,lon)",
+          "sourceRange": {
+            "start": {
+              "line": 47,
+              "column": 10
+            },
+            "end": {
+              "line": 51,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "Object | null | undefined"
+        },
+        {
+          "name": "hidden",
+          "description": "When set the cluster icon is hidden",
+          "sourceRange": {
+            "start": {
+              "line": 55,
+              "column": 10
+            },
+            "end": {
+              "line": 58,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "boolean | null | undefined"
+        }
+      ],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "google-map-markercluster-click",
+          "description": "Fired when the cluster was clicked.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "google-map-markercluster-mouseout",
+          "description": "Fired when the mouse leaves the area of the cluster.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "google-map-markercluster-mouseover",
+          "description": "Fired when the mouse enters the area of the cluster.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "center-changed",
+          "description": "Fired when the `center` property changes.",
+          "metadata": {}
+        }
+      ],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [
+        {
+          "description": "",
+          "name": "",
+          "range": {
+            "start": {
+              "line": 6,
+              "column": 6
+            },
+            "end": {
+              "line": 6,
+              "column": 39
+            }
+          }
+        }
+      ],
+      "tagname": "google-map-markercluster"
+    },
+    {
+      "description": "The `google-map-defaulticon` element is displayed by default when the user does not provide a custom cluster icon.",
+      "summary": "",
+      "path": "google-map-defaulticon.html",
+      "properties": [
+        {
+          "name": "styles",
+          "type": "Array | null | undefined",
+          "description": "The list of styles that should be applied to the cluster icon for the various\ncluster levels. If not set, the default styles will be used.\nMust be of object with following keys `{url,width,height,textColor,textSize}`",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 84,
+              "column": 10
+            },
+            "end": {
+              "line": 87,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "Array"
+            }
+          }
+        },
+        {
+          "name": "_iconStyle",
+          "type": "Object | null | undefined",
+          "description": "The active style for the current cluster level",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 91,
+              "column": 10
+            },
+            "end": {
+              "line": 94,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "Object"
+            }
+          },
+          "defaultValue": "{}"
+        }
+      ],
+      "methods": [
+        {
+          "name": "_calcActiveStyleIndex",
+          "description": "Calculates the index of the active style that should be displayed for the current cluster.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 107,
+              "column": 6
+            },
+            "end": {
+              "line": 115,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "markerLength"
+            },
+            {
+              "name": "numStyles"
+            }
+          ]
+        },
+        {
+          "name": "_computeText",
+          "description": "Returns the text that should be displayed",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 120,
+              "column": 6
+            },
+            "end": {
+              "line": 122,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "markers"
+            }
+          ]
+        },
+        {
+          "name": "_updateCustom",
+          "description": "Observer function that is called when either the `markers` or `styles` is changed.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 127,
+              "column": 6
+            },
+            "end": {
+              "line": 146,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "markers"
+            },
+            {
+              "name": "styles"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        }
+      ],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 74,
+          "column": 4
+        },
+        "end": {
+          "line": 147,
+          "column": 5
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "name": "GoogleMapDefaultIcon",
+      "attributes": [
+        {
+          "name": "styles",
+          "description": "The list of styles that should be applied to the cluster icon for the various\ncluster levels. If not set, the default styles will be used.\nMust be of object with following keys `{url,width,height,textColor,textSize}`",
+          "sourceRange": {
+            "start": {
+              "line": 84,
+              "column": 10
+            },
+            "end": {
+              "line": 87,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "Array | null | undefined"
+        }
+      ],
+      "events": [],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "google-map-defaulticon"
+    },
+    {
+      "description": "The `google-map-markerclusterer` element is a port of markercluster-plus to polymer.\nIt helps to cluster markers on a google-map together\n##### Example\n    <google-map-markerclusterer></google-map-markerclusterer>\n\n##### Example -  custom cluster marker\n\n    <google-map-markerclusterer>\n      <my-custom-clustericon class=\"cluster-icon\"></my-custom-clustericon>\n    </google-map-markerclusterer>",
+      "summary": "",
+      "path": "google-map-markerclusterer.html",
+      "properties": [
+        {
+          "name": "markers",
+          "type": "Array | null | undefined",
+          "description": "Markers that should be clustered.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 69,
+              "column": 12
+            },
+            "end": {
+              "line": 73,
+              "column": 13
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_markersChanged\"",
+              "attributeType": "Array"
+            }
+          },
+          "defaultValue": "[]"
+        },
+        {
+          "name": "fitToMarkers",
+          "type": "boolean | null | undefined",
+          "description": "If set, the zoom level is set such that all markers (google-map-marker children) are brought into view.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 78,
+              "column": 12
+            },
+            "end": {
+              "line": 82,
+              "column": 13
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_fitToMarkersChanged\"",
+              "attributeType": "Boolean"
+            }
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "batchSize",
+          "type": "number | null | undefined",
+          "description": "BatchSize specifies the amount of markers that should be processed per run.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 87,
+              "column": 12
+            },
+            "end": {
+              "line": 90,
+              "column": 13
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "Number"
+            }
+          },
+          "defaultValue": "2000"
+        },
+        {
+          "name": "ignoreHidden",
+          "type": "boolean | null | undefined",
+          "description": "If set ignores hidden markers when creating the clusters.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 95,
+              "column": 12
+            },
+            "end": {
+              "line": 98,
+              "column": 13
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "Boolean"
+            }
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "gridSize",
+          "type": "number | null | undefined",
+          "description": "Specifies the size of the grid for each cluster in pixel.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 103,
+              "column": 12
+            },
+            "end": {
+              "line": 106,
+              "column": 13
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "Number"
+            }
+          },
+          "defaultValue": "60"
+        },
+        {
+          "name": "minimumClusterSize",
+          "type": "number | null | undefined",
+          "description": "Sepcifies the minimum number of markers to be clustered.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 111,
+              "column": 12
+            },
+            "end": {
+              "line": 114,
+              "column": 13
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "Number"
+            }
+          },
+          "defaultValue": "2"
+        },
+        {
+          "name": "averageCenter",
+          "type": "boolean | null | undefined",
+          "description": "If set, the center of the cluster is set to the average of all locations of its containing markers.\nOtherwise the cluster center will be the one of the first marker added to it.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 120,
+              "column": 12
+            },
+            "end": {
+              "line": 123,
+              "column": 13
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "Boolean"
+            }
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "maxZoom",
+          "type": "number | null | undefined",
+          "description": "Specifies the maximum zoom at which individual markers are shown.\nBy default no maxZoom is set.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 129,
+              "column": 12
+            },
+            "end": {
+              "line": 132,
+              "column": 13
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "Number"
+            }
+          },
+          "defaultValue": "null"
+        },
+        {
+          "name": "zoomOnClick",
+          "type": "boolean | null | undefined",
+          "description": "If set, the map is zoomed far enough that all markers of the cluster fit inside the viewport (Default: true).",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 137,
+              "column": 12
+            },
+            "end": {
+              "line": 140,
+              "column": 13
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "Boolean"
+            }
+          },
+          "defaultValue": "true"
+        },
+        {
+          "name": "styles",
+          "type": "Array | null | undefined",
+          "description": "Styles for the google-map-defaulticon element.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 144,
+              "column": 12
+            },
+            "end": {
+              "line": 148,
+              "column": 13
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_changeStyles\"",
+              "attributeType": "Array"
+            }
+          },
+          "defaultValue": "null"
+        }
+      ],
+      "methods": [
+        {
+          "name": "connectedCallback",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 167,
+              "column": 8
+            },
+            "end": {
+              "line": 171,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_initClusterIconTemplate",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 173,
+              "column": 8
+            },
+            "end": {
+              "line": 183,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_distanceBetweenPoints",
+          "description": "Calculates the distance between two latlng locations in km.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 193,
+              "column": 8
+            },
+            "end": {
+              "line": 203,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "p1",
+              "type": "google.maps.LatLng",
+              "description": "The first lat lng point."
+            },
+            {
+              "name": "p2",
+              "type": "google.maps.LatLng",
+              "description": "The second lat lng point."
+            }
+          ],
+          "return": {
+            "type": "number",
+            "desc": "The distance between the two points in km."
+          }
+        },
+        {
+          "name": "_isMarkerInBounds",
+          "description": "Returns if the marker is inside the specified bounds",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 208,
+              "column": 8
+            },
+            "end": {
+              "line": 210,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "marker"
+            },
+            {
+              "name": "bounds"
+            }
+          ]
+        },
+        {
+          "name": "onAdd",
+          "description": "Called when the markerclusterer is added to the map.\nEvents are initialized.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 216,
+              "column": 8
+            },
+            "end": {
+              "line": 238,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_addToClosestCluster",
+          "description": "Adds a marker to a cluster, or creates a new cluster.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 243,
+              "column": 8
+            },
+            "end": {
+              "line": 282,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "marker"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_computeClusters",
+          "description": "Creates the clusters. This is done in batches to avoid timeout errors\n in some browsers when there is a huge number of markers.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 291,
+              "column": 8
+            },
+            "end": {
+              "line": 340,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "iFirst",
+              "type": "number",
+              "description": "The index of the first marker in the batch of\n markers to be added to clusters."
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "onRemove",
+          "description": "Callback that is called when the markerclusterer is removed from the map.\nThis will put all clustered markers back on the map",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 346,
+              "column": 8
+            },
+            "end": {
+              "line": 353,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_fitToMarkersChanged",
+          "description": "Observer function that is called when `fitToMarkers` is changed.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 358,
+              "column": 8
+            },
+            "end": {
+              "line": 373,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_optionChanged",
+          "description": "Observer function that is called if one of the options is changed.\nDebounce calls to `repaint`",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 379,
+              "column": 8
+            },
+            "end": {
+              "line": 381,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "markers"
+            },
+            {
+              "name": "gridSize"
+            },
+            {
+              "name": "averageCenter"
+            },
+            {
+              "name": "minimumClusterSize"
+            },
+            {
+              "name": "maxZoom"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "repaint",
+          "description": "Repaint will re-create and re-draw the clusters.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 386,
+              "column": 9
+            },
+            "end": {
+              "line": 389,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_resetClusters",
+          "description": "Removes the clusters and resets the markers.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 394,
+              "column": 8
+            },
+            "end": {
+              "line": 401,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_initMarkers",
+          "description": "Initializes the markers and setups dragend event if markers is draggable.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 406,
+              "column": 8
+            },
+            "end": {
+              "line": 421,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "markers"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_resetMarkers",
+          "description": "this will reset the marker.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 428,
+              "column": 8
+            },
+            "end": {
+              "line": 439,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "optHide"
+            },
+            {
+              "name": "markers",
+              "type": "Array",
+              "description": "the markers that should be reset"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_markersChanged",
+          "description": "Observer function that is called when the `markers` Array is changed.\nWill reset the current markers and debounce call to `repaint`",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 444,
+              "column": 8
+            },
+            "end": {
+              "line": 451,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newMarkers"
+            },
+            {
+              "name": "oldMarkers"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_changeStyles",
+          "description": "Observer function that is called when the styles are changed.\nOnly used when the `google-map-defaulticon` is used.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 457,
+              "column": 8
+            },
+            "end": {
+              "line": 468,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "styles"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        }
+      ],
+      "staticMethods": [],
+      "demos": [
+        {
+          "url": "demo/index.html",
+          "description": ""
+        },
+        {
+          "url": "demo/simple.html",
+          "description": ""
+        }
+      ],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 33,
+          "column": 6
+        },
+        "end": {
+          "line": 469,
+          "column": 7
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "name": "GoogleMapMarkerclusterer",
+      "attributes": [
+        {
+          "name": "markers",
+          "description": "Markers that should be clustered.",
+          "sourceRange": {
+            "start": {
+              "line": 69,
+              "column": 12
+            },
+            "end": {
+              "line": 73,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "type": "Array | null | undefined"
+        },
+        {
+          "name": "fit-to-markers",
+          "description": "If set, the zoom level is set such that all markers (google-map-marker children) are brought into view.",
+          "sourceRange": {
+            "start": {
+              "line": 78,
+              "column": 12
+            },
+            "end": {
+              "line": 82,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "type": "boolean | null | undefined"
+        },
+        {
+          "name": "batch-size",
+          "description": "BatchSize specifies the amount of markers that should be processed per run.",
+          "sourceRange": {
+            "start": {
+              "line": 87,
+              "column": 12
+            },
+            "end": {
+              "line": 90,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "type": "number | null | undefined"
+        },
+        {
+          "name": "ignore-hidden",
+          "description": "If set ignores hidden markers when creating the clusters.",
+          "sourceRange": {
+            "start": {
+              "line": 95,
+              "column": 12
+            },
+            "end": {
+              "line": 98,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "type": "boolean | null | undefined"
+        },
+        {
+          "name": "grid-size",
+          "description": "Specifies the size of the grid for each cluster in pixel.",
+          "sourceRange": {
+            "start": {
+              "line": 103,
+              "column": 12
+            },
+            "end": {
+              "line": 106,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "type": "number | null | undefined"
+        },
+        {
+          "name": "minimum-cluster-size",
+          "description": "Sepcifies the minimum number of markers to be clustered.",
+          "sourceRange": {
+            "start": {
+              "line": 111,
+              "column": 12
+            },
+            "end": {
+              "line": 114,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "type": "number | null | undefined"
+        },
+        {
+          "name": "average-center",
+          "description": "If set, the center of the cluster is set to the average of all locations of its containing markers.\nOtherwise the cluster center will be the one of the first marker added to it.",
+          "sourceRange": {
+            "start": {
+              "line": 120,
+              "column": 12
+            },
+            "end": {
+              "line": 123,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "type": "boolean | null | undefined"
+        },
+        {
+          "name": "max-zoom",
+          "description": "Specifies the maximum zoom at which individual markers are shown.\nBy default no maxZoom is set.",
+          "sourceRange": {
+            "start": {
+              "line": 129,
+              "column": 12
+            },
+            "end": {
+              "line": 132,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "type": "number | null | undefined"
+        },
+        {
+          "name": "zoom-on-click",
+          "description": "If set, the map is zoomed far enough that all markers of the cluster fit inside the viewport (Default: true).",
+          "sourceRange": {
+            "start": {
+              "line": 137,
+              "column": 12
+            },
+            "end": {
+              "line": 140,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "type": "boolean | null | undefined"
+        },
+        {
+          "name": "styles",
+          "description": "Styles for the google-map-defaulticon element.",
+          "sourceRange": {
+            "start": {
+              "line": 144,
+              "column": 12
+            },
+            "end": {
+              "line": 148,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "type": "Array | null | undefined"
+        }
+      ],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "google-map-markercluster-click",
+          "description": "Fired when the cluster was clicked.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "google-map-markercluster-clustering-end",
+          "description": "Fired when the clustering of the markers ends.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "google-map-markercluster-clustering-start",
+          "description": "Fired when the clustering of the markers starts.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "google-map-markercluster-mouseout",
+          "description": "Fired when the mouse leaves the area of the cluster.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "google-map-markercluster-mouseover",
+          "description": "Fired when the mouse enters the area of the cluster.",
+          "metadata": {}
+        }
+      ],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [
+        {
+          "description": "",
+          "name": "cluster-icon",
+          "range": {
+            "start": {
+              "line": 8,
+              "column": 11
+            },
+            "end": {
+              "line": 8,
+              "column": 69
+            }
+          }
+        }
+      ],
+      "tagname": "google-map-markerclusterer"
+    },
+    {
+      "description": "The `google-map-overlayview` element is a generic overlay container element.\nIt maps to the OverlayView of google maps v3.\n<b>Example</b>:\n    <google-map-overlayview><some-element /></google-map-overlayview>\n\nFor example to embed a simple `<img>` element into a overlay use this code:\n\n    <google-map-overlayview><img src=\"URL\" /></google-map-overlayview>\n\nIt is also possible to embed another `custom element` inside a `<google-map-overlayview>`",
+      "summary": "",
+      "path": "google-map-overlayview.html",
+      "properties": [],
+      "methods": [],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 24,
+          "column": 4
+        },
+        "end": {
+          "line": 26,
+          "column": 5
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "name": "GoogleMapOverlayView",
+      "attributes": [],
+      "events": [],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [
+        {
+          "description": "",
+          "name": "",
+          "range": {
+            "start": {
+              "line": 6,
+              "column": 8
+            },
+            "end": {
+              "line": 6,
+              "column": 41
+            }
+          }
+        }
+      ],
+      "tagname": "google-map-overlayview"
+    }
+  ],
+  "mixins": [
+    {
+      "description": "Use `GoogleMapOverlayViewBehavior` to implement elements that should be displayed on a `google-map` using an overlayview",
+      "summary": "",
+      "path": "google-map-overlayview-behavior.html",
+      "properties": [
+        {
+          "name": "map",
+          "type": "Object | null | undefined",
+          "description": "A Maps API object.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 13,
+              "column": 10
+            },
+            "end": {
+              "line": 17,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_mapChanged\"",
+              "attributeType": "Object"
+            }
+          },
+          "defaultValue": "null"
+        },
+        {
+          "name": "visible",
+          "type": "boolean | null | undefined",
+          "description": "A boolean flag to set the visiblity",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 22,
+              "column": 10
+            },
+            "end": {
+              "line": 25,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "Boolean"
+            }
+          },
+          "defaultValue": "true"
+        }
+      ],
+      "methods": [
+        {
+          "name": "ready",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 29,
+              "column": 6
+            },
+            "end": {
+              "line": 32,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_initOverlay",
+          "description": "Initializes the overlay if the Google Maps API was properly loaded.\nSets the callbacks (onAdd, draw and onRemove) to the current instance",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 37,
+              "column": 6
+            },
+            "end": {
+              "line": 48,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_overlayView",
+          "description": "OverlayView object constructor.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 52,
+              "column": 6
+            },
+            "end": {
+              "line": 56,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "map"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_mapChanged",
+          "description": "Callback when the map is changed. By default this will call `setMap` on the `OverlayView`",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 61,
+              "column": 6
+            },
+            "end": {
+              "line": 66,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "map"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "draw",
+          "description": "draw callback when the overlayview is drawn",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 71,
+              "column": 6
+            },
+            "end": {
+              "line": 71,
+              "column": 15
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "onAdd",
+          "description": "onAdd callback when the overlayview is added to the map.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 76,
+              "column": 6
+            },
+            "end": {
+              "line": 79,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "onRemove",
+          "description": "onRemove callback when the overlayview is removed from the map.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 84,
+              "column": 6
+            },
+            "end": {
+              "line": 86,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "getPosFromLatLng",
+          "description": "Returns the position at which to place the DIV depending on the latlng.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 94,
+              "column": 6
+            },
+            "end": {
+              "line": 99,
+              "column": 9
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "latlng",
+              "type": "google.maps.LatLng",
+              "description": "The position in latlng."
+            }
+          ],
+          "return": {
+            "type": "google.maps.Point",
+            "desc": "The position in pixels."
+          }
+        },
+        {
+          "name": "getExtendedBounds",
+          "description": "Returns the current bounds extended by the grid size.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 106,
+              "column": 6
+            },
+            "end": {
+              "line": 133,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "bounds",
+              "type": "google.maps.LatLngBounds",
+              "description": "The bounds to extend."
+            },
+            {
+              "name": "size"
+            }
+          ],
+          "return": {
+            "type": "google.maps.LatLngBounds",
+            "desc": "The extended bounds."
+          }
+        }
+      ],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 6,
+          "column": 2
+        },
+        "end": {
+          "line": 135,
+          "column": 3
+        }
+      },
+      "privacy": "public",
+      "name": "GoogleMapOverlayViewBehavior",
+      "attributes": [
+        {
+          "name": "map",
+          "description": "A Maps API object.",
+          "sourceRange": {
+            "start": {
+              "line": 13,
+              "column": 10
+            },
+            "end": {
+              "line": 17,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "Object | null | undefined"
+        },
+        {
+          "name": "visible",
+          "description": "A boolean flag to set the visiblity",
+          "sourceRange": {
+            "start": {
+              "line": 22,
+              "column": 10
+            },
+            "end": {
+              "line": 25,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "boolean | null | undefined"
+        }
+      ],
+      "events": [],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": []
+    },
+    {
+      "description": "Use `ClusterIconBehavior` to implement elements that should display a custom cluster icon.\nUsers should implement the `updateMarkers` function if they need to customize based on the markers that are contained * in the cluster.",
+      "summary": "",
+      "path": "google-map-markercluster-icon-behavior.html",
+      "properties": [
+        {
+          "name": "markers",
+          "type": "Array | null | undefined",
+          "description": "The markers that are contained in the cluster.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 14,
+              "column": 10
+            },
+            "end": {
+              "line": 17,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"updateMarkers\"",
+              "attributeType": "Array"
+            }
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "updateMarkers",
+          "description": "Observer function that is called when the `markers` Array is changed.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 23,
+              "column": 6
+            },
+            "end": {
+              "line": 25,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "markers"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        }
+      ],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 7,
+          "column": 2
+        },
+        "end": {
+          "line": 27,
+          "column": 3
+        }
+      },
+      "privacy": "public",
+      "name": "ClusterIconBehavior",
+      "attributes": [
+        {
+          "name": "markers",
+          "description": "The markers that are contained in the cluster.",
+          "sourceRange": {
+            "start": {
+              "line": 14,
+              "column": 10
+            },
+            "end": {
+              "line": 17,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "Array | null | undefined"
+        }
+      ],
+      "events": [],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": []
+    },
+    {
+      "description": "Use `GoogleMapOverlayViewMarkerBehavior` to implement elements that should be displayed as `Marker` on a `google-map` using an overlayview\nUsers should either override the `_update` if they need to customize the positioning.",
+      "summary": "",
+      "path": "google-map-overlayview-marker-behavior.html",
+      "properties": [
+        {
+          "name": "position",
+          "type": "Object | null | undefined",
+          "description": "The position of the marker on the map",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 16,
+              "column": 5
+            },
+            "end": {
+              "line": 19,
+              "column": 6
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "Object"
+            }
+          },
+          "defaultValue": "null"
+        },
+        {
+          "name": "size",
+          "type": "number | null | undefined",
+          "description": "The size of the marker",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 23,
+              "column": 5
+            },
+            "end": {
+              "line": 26,
+              "column": 6
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "Number"
+            }
+          },
+          "defaultValue": "25"
+        },
+        {
+          "name": "draggable",
+          "type": "boolean | null | undefined",
+          "description": "Set to true if the marker should be draggable",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 30,
+              "column": 5
+            },
+            "end": {
+              "line": 33,
+              "column": 6
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "Boolean"
+            }
+          },
+          "defaultValue": "false"
+        }
+      ],
+      "methods": [
+        {
+          "name": "ready",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 36,
+              "column": 3
+            },
+            "end": {
+              "line": 39,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "getPosition",
+          "description": "Returns the position of the marker",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 44,
+              "column": 3
+            },
+            "end": {
+              "line": 46,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "getDraggable",
+          "description": "Returns whether marker is draggable.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 51,
+              "column": 3
+            },
+            "end": {
+              "line": 53,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "getMap",
+          "description": "Returns the map instance.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 58,
+              "column": 3
+            },
+            "end": {
+              "line": 63,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "setMap",
+          "description": "Sets the map instance",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 67,
+              "column": 3
+            },
+            "end": {
+              "line": 71,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "map"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "drawfunction",
+          "description": "Draw callback forwarded to the function `update`.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 76,
+              "column": 3
+            },
+            "end": {
+              "line": 78,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "update",
+          "description": "Override this function to implement custom positioning.\nBy default will `left` and `top` CSS settings are used to position the element.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 83,
+              "column": 3
+            },
+            "end": {
+              "line": 88,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "position"
+            },
+            {
+              "name": "size"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        }
+      ],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 9,
+          "column": 1
+        },
+        "end": {
+          "line": 90,
+          "column": 2
+        }
+      },
+      "privacy": "public",
+      "name": "GoogleMapOverlayViewMarkerBehavior",
+      "attributes": [
+        {
+          "name": "position",
+          "description": "The position of the marker on the map",
+          "sourceRange": {
+            "start": {
+              "line": 16,
+              "column": 5
+            },
+            "end": {
+              "line": 19,
+              "column": 6
+            }
+          },
+          "metadata": {},
+          "type": "Object | null | undefined"
+        },
+        {
+          "name": "size",
+          "description": "The size of the marker",
+          "sourceRange": {
+            "start": {
+              "line": 23,
+              "column": 5
+            },
+            "end": {
+              "line": 26,
+              "column": 6
+            }
+          },
+          "metadata": {},
+          "type": "number | null | undefined"
+        },
+        {
+          "name": "draggable",
+          "description": "Set to true if the marker should be draggable",
+          "sourceRange": {
+            "start": {
+              "line": 30,
+              "column": 5
+            },
+            "end": {
+              "line": 33,
+              "column": 6
+            }
+          },
+          "metadata": {},
+          "type": "boolean | null | undefined"
+        }
+      ],
+      "events": [],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": []
+    }
+  ]
+}

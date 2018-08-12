@@ -1,51 +1,61 @@
-<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../polymer/polymer-element.html">
 <link rel="import" href="../google-map-overlayview-marker-behavior.html">
+<link rel="import" href="../google-map-overlayview-behavior.html">
 <link rel="import" href="my-css-pie.html">
 
 <dom-module id="my-custom-marker">
+  <template>    
+    <my-css-pie id="chart" data="{{data}}"></my-css-pie>
+  </template>
   <script>
-   Polymer({
-     is: 'my-custom-marker',
-     behaviors: [Markerclusterer.GoogleMapOverlayViewMarkerBehavior],
+    class MyCustomMarker extends GoogleMapOverlayViewMarkerBehavior(Polymer.Element) {
+      static get is() { return 'my-custom-marker'; }
 
-     listeners: {
-        'tap': 'onClickMarker'
-      },
+      constructor() {
+        super();        
+        this.infoWindow = null;
+        this.data = [10,20,40,30];
+      }
 
-     created: function() {
-       this.pieChart = null;
-       this.infoWindow = null;
-       this.data = [10,20,40,30];
-     },
-     onAdd : function() {
-        this.style.cursor="pointer";
-        this.pieChart = document.createElement('my-css-pie')
-        Polymer.dom(this).appendChild(this.pieChart);
-        this.pieChart.data = this.data ;
-        this.pieChart.size = 25;
+      ready() {
+        super.ready();        
+        this.addEventListener('click', function(event) {
+          this.onClickMarker();
+        }.bind(this));
+      }
+
+      onAdd() {
+        this.style.cursor="pointer";                
+        //this.pieChart.data = this.data ;
+        this.$.chart.size = 25;
         var panes = this.overlay.getPanes();
         panes.overlayMouseTarget.appendChild(this);
-     },
-     onClickMarker : function() {
-       if (!this.infoWindow) {
-        this.infoWindow = new google.maps.InfoWindow();
-       }
-       var divContainer = document.createElement("div");
-       divContainer.style.width="150px";
-       divContainer.style.height="140px";
-       var pieChart = document.createElement('my-css-pie');
-       pieChart.data = this.data;
-       pieChart.size = 100;
-       divContainer.appendChild(pieChart);
-       this.infoWindow.setContent(divContainer);
-       this.infoWindow.setPosition(this.position);
-       this.infoWindow.open(this.overlay.getMap());
+      }
+      onClickMarker() {
+        if (!this.infoWindow) {
+          this.infoWindow = new google.maps.InfoWindow();
+        }
+        var divContainer = document.createElement("div");
+        divContainer.style.width="150px";
+        divContainer.style.height="140px";
+        var pieChart = document.createElement('my-css-pie');
+        pieChart.data = this.data;
+        pieChart.size = 100;
+        divContainer.appendChild(pieChart);
+        this.infoWindow.setContent(divContainer);
+        this.infoWindow.setPosition(this.position);
+        this.infoWindow.open(this.overlay.getMap());
 
-     },
-     onRemove : function() {
-        this.removeChild(this.pieChart);
-        this.infoWindow = null;
-     },
-   });
+      }
+      onRemove() {
+          super.onRemove();
+          if (!this.pieChart)
+            return;
+          this.shadowRoot.removeChild(this.pieChart);
+          this.infoWindow = null;
+      }
+    }
+
+    customElements.define('my-custom-marker', MyCustomMarker);
  </script>
 </dom-module>

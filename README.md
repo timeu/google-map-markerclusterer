@@ -59,11 +59,11 @@ Or [download as ZIP](https://github.com/timeu/google-map-markerclusterer/archive
 See the [component page](http://timeu.github.io/google-map-markerclusterer) for more information.
 
 
-##Custom markers
+## Custom markers
 
 Instead of the default markers `<google-map-marker>` also custom markers can be used by implementing the behavior: `Markerclusterer.GoogleMapOverlayViewMarkerBehavior`
 
-##Custom cluster markers
+## Custom cluster markers
 
 There are 2 ways to have custom cluster markers:
 
@@ -109,7 +109,7 @@ var markerclusterer = document.querySelector("google-map-markerclusterer");
 markerclusterer.styles = styles;
 ```
 
-###Wrapping a custom element
+## Wrapping a custom element
 
 If the use-case is more advanced than just what the styles attribute provides, it's possible to specify a custom element as a replacement for the default cluster marker. Create a custom element (i.e `<my-element>`) that implements the `Markerclusterer.ClusterIconBehavior` behavior and add it to the `google-map-markerclusterer`.
 **Important:** Make sure to add a *cluster-icon* classname to your custom cluster icon element.
@@ -123,12 +123,14 @@ If the use-case is more advanced than just what the styles attribute provides, i
 
 The various customizations can be viewed on the [demo page](http://timeu.github.io/google-map-markerclusterer/components/google-map-markerclusterer/demo/) page.
 
+## Versions & Branches
 
-## Browser Support
-
-![IE](https://raw.github.com/paulirish/browser-logos/master/internet-explorer/internet-explorer_48x48.png) | ![Chrome](https://raw.github.com/paulirish/browser-logos/master/chrome/chrome_48x48.png) | ![Firefox](https://raw.github.com/paulirish/browser-logos/master/firefox/firefox_48x48.png) | ![Opera](https://raw.github.com/paulirish/browser-logos/master/opera/opera_48x48.png) | ![Safari](https://raw.github.com/paulirish/browser-logos/master/safari/safari_48x48.png)
---- | --- | --- | --- | --- |
-IE 10+ ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ |
+| Polymer version | Branch | Release |
+|  :----   |  :----  | :---     |
+|  1.x    |  [1.x](https://github.com/timeu/google-map-markerclusterer/tree/1.x) | 1.x |
+|  2.x    |  [2.x](https://github.com/timeu/google-map-markerclusterer/tree/2.x) | 2.x |
+|  3.x    |  [3.x](https://github.com/timeu/google-map-markerclusterer/tree/3.x) | 3.x |
+|  lit-element | [master](https://github.com/timeu/google-map-markerclusterer/tree/master) | 4.x|
 
 ## Contributing
 

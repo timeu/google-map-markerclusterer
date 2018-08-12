@@ -1,64 +1,67 @@
-<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../polymer/polymer-element.html">
 <link rel="import" href="../google-map-markercluster-icon-behavior.html">
 <link rel="import" href="my-css-pie.html">
 
 <dom-module id="my-custom-clustericon">
-  <style>
-  :host {
-    position:absolute;
-    top:-15px;
-    left:-15px;
-  }
-  .icon  {
-    position:absolute;
-    left:0;
-    top:0;
-  }
-  .text {
-    position:absolute;
-    text-align:center;
-    font-family: Arial,sans-serif;
-    font-weight: bold;
-    font-style: normal;
-    text-decoration: none;
-    font-size:16px;
-    width:30px;
-    line-height:30px;
-    color:black;
-    top:0;
-    left:0;
-  }
-</style>
   <template>
+    <style>
+      :host {
+        position:absolute;
+        top:-15px;
+        left:-15px;
+      }
+      .icon  {
+        position:absolute;
+        left:0;
+        top:0;
+      }
+      .text {
+        position:absolute;
+        text-align:center;
+        font-family: Arial,sans-serif;
+        font-weight: bold;
+        font-style: normal;
+        text-decoration: none;
+        font-size:16px;
+        width:30px;
+        line-height:30px;
+        color:black;
+        top:0;
+        left:0;
+      }
+    </style>
     <div class="icon" id="icon"><my-css-pie id="pie" size="30"></my-css-pie></img>
     <div class="text" id="text">{{text}}</div>
   </template>
 </dom-module>
- <script>
-   Polymer({
-     is: 'my-custom-clustericon',
-     behaviors: [Markerclusterer.ClusterIconBehavior],
+  <script>
+    class MyCustomClusterIcon extends ClusterIconBehavior(Polymer.Element) {
+      static get is() { return 'my-custom-clustericon'; }
+      static get properties() {
+        return {
+          iconOffset: {
+            type:Array,
+            value: function()  {return ["15px","15px"]}
+          },
+          textOffset: {
+            type:Array,
+            value: function()  {return [0,0]}
+          }
+        }
+      }
 
-     properties: {
-       iconOffset: {
-         type:Array,
-         value: function()  {return ["15px","15px"]}
-       },
-       textOffset: {
-         type:Array,
-         value: function()  {return [0,0]}
-       }
-     },
-     created: function() {
-      this.pieChart = null;
-     },
-     ready : function() {
-       this.pieChart = this.$.pie;
-     },
-     updateMarkers: function(markers) {
-        this.pieChart.data = [10,20,40,30];
+      constructor() {
+        super();
+      }
+      ready() {
+        super.ready();
+      }
+      updateMarkers(markers) {
+        this.$.pie.data = [10,20,40,30];
         this.text = markers.length;
-     }
-   });
+      }
+    }
+
+    customElements.define('my-custom-clustericon', MyCustomClusterIcon);
  </script>
 </polymer-element>
